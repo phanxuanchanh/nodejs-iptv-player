@@ -5,6 +5,8 @@ import { engine } from 'express-handlebars';
 import { __dirname, app } from './config.js';
 import appRoute from './app-route.js';
 
+import './handlebars-helper.js';
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

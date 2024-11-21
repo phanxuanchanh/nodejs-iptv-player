@@ -1,20 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Channel List</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>example.m3u</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #303030;
+            color: white;
+        }
+
+        .navbar {
+            background-color: #1976d2;
+        }
+
+        .nav-link {
+            color: white !important;
+        }
+
+        .nav-link.active {
+            border-bottom: 2px solid white;
+        }
+
+        .channel-card {
+            background-color: #424242;
+            color: white;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .channel-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: inline-block;
+            line-height: 50px;
+            font-size: 24px;
+            color: #424242;
+            margin-bottom: 10px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .previous {
+            background-color: #f1f1f1;
+            color: black;
+            text-decoration: none;
+            display: inline-block;
+            padding: 8px 16px;
+        }
+
+        .next {
+            background-color: #04AA6D;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            padding: 8px 16px;
+        }
+
+        .round {
+            border-radius: 50%;
+        }
+
+        .previous :hover,
+        .next :hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .channel-list {
+            max-height: 85%;
+            overflow-y: auto;
+        }
+        .video-player {
+            background: black;
+            height: 85%;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container my-5">
-        <!-- Nội dung của mỗi trang sẽ được chèn ở đây -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">example.m3u</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">All Channels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Music</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Films</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-th"></i></button>
+                    <button class="btn btn-outline-light" type="button"><i class="fas fa-ellipsis-v"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-3">
         {{{body}}}
     </div>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+e4l5L5zzL5x2Q5p5v5t5p5p5p5p5"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

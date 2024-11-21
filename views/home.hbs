@@ -1,44 +1,39 @@
-<h1 class="text-center mb-4">IPTV Channel List</h1>
-<div class="my-2 card">
-    <div class="card-header">
-        <p class="text-center"></p>
-    </div>
-    <div class="card-body">
-        <form method="post" action="/update-channels-list">
-            <button type="submit" class="btn btn-primary">Cập nhật danh sách kênh</button>
-        </form>
-    </div>
-
-</div>
-
 <div class="row">
     {{#each paginatedData.items}}
-    <div class="col-1">
-         
-         {{this.name}}
-
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="channel-card" onclick="play({{this.id}})">
+            {{#if this.logo}}
+            <div class="channel-icon" style="background-image:url({{this.logo}});">
+            </div>
+            {{else}}
+            <div class="channel-icon" style="background-color: #90a4ae;">C</div>
+            {{/if}}
+            <div>{{this.name}}</div>
+        </div>
     </div>
     {{/each}}
 </div>
-{{!-- <table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Channel Name</th>
-            <th>Category</th>
-            <th>Link</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each paginatedData.items}}
-        <tr>
-            <td>{{@index}}</td>
-            <td>{{this.name}} <img src="{{this.logo}}" width="20" height="20" /> </td>
-            <td>{{this.group}}</td>
-            <td><a href="{{this.url}}" target="_blank">Go to</a></td>
-            <td><a class="btn btn-danger" href="/play/{{this.id}}">Play</button></td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table> --}}
+
+<div class="row">
+    <div class="col text-center">
+        {{#ifCond paginatedData.page '<=' 1}}
+        <a href="#" class="previous round">&#8249;</a>
+        {{else}}
+        <a href="/?page={{math paginatedData.page '-' 1}}&pageSize={{paginatedData.pageSize}}" class="previous round">&#8249;</a>
+        {{/ifCond}}
+        <a href="/?page={{math paginatedData.page '+' 1}}&pageSize={{paginatedData.pageSize}}" class="next round">&#8250;</a>
+    </div>
+</div>
+
+<script>
+    function play(channelId){
+        const urlParams = new URLSearchParams(new URL(window.location.href).search);
+        const page = urlParams.get('page');
+        const pageSize = urlParams.get('pageSize');
+
+        if(page && pageSize)
+            location.href = `/play/${channelId}?page=${page}&pageSize=${pageSize}`;
+        else
+            location.href = `/play/${channelId}`;
+    }
+</script>

@@ -32,11 +32,30 @@ export async function get(query, params = []) {
     });
 }
 
-export async function getPaginatedData(table, page = 1, pageSize = 10) {
+export async function getPaginatedData1(tableName, page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
-    const paginatedQuery = `SELECT * FROM ${table} LIMIT ? OFFSET ?`;
+    const paginatedQuery = `SELECT * FROM ${tableName} LIMIT ? OFFSET ?`;
     const items = await new Promise((resolve, reject) => {
         db.all(paginatedQuery, [pageSize, offset], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows);
+        });
+    });
+
+    return {
+        page: page,
+        pageSize: pageSize,
+        items: items
+    }
+}
+
+export async function getPaginatedData2(tableName, where, whereParams, page = 1, pageSize = 10) {
+    const offset = (page - 1) * pageSize;
+    const paginatedQuery = `SELECT * FROM ${tableName} WHERE ${where} LIMIT ? OFFSET ?`;
+    const items = await new Promise((resolve, reject) => {
+        db.all(paginatedQuery, [...whereParams , pageSize, offset], (err, rows) => {
             if (err)
                 reject(err);
             else

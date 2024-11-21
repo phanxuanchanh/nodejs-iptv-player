@@ -1,5 +1,24 @@
-<h1>IPTV Video Player</h1>
-<video id="video" controls width="640" height="360" data-url="{{item.url}}"></video>
+<div class="row mt-2" style="height:100%;">
+    <!-- Left Sidebar: Channel List -->
+    <div class="col-md-3 channel-list p-3 bg-dark border-end">
+        <h5 class="text-center">Channel List</h5>
+        <ul class="list-group">
+            {{#each paginatedData.items}}
+            <li class="list-group-item"><a href="/play/{{this.id}}" class="text-decoration-none">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <!-- Right Content: Video Player -->
+    <div class="col-md-9 d-flex justify-content-center align-items-left">
+        <div class="video-player w-100">
+            <video id="video" class="w-100 h-100" controls data-url="{{item.url}}">
+                <source src="video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
     const video = document.getElementById('video');
