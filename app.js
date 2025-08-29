@@ -1,21 +1,47 @@
-import path from "path";
-import express from 'express';
-import { engine } from 'express-handlebars';
+const { app, BrowserWindow, ipcMain } = require("electron");
+const fs = require("fs");
+const hbs = require("hbs");
+const path = require("path");
+const { loadList } = require("./serivce.js");
+const helpers = require('./shared/handlebars-helper.js');
 
-import { __dirname, app } from './config.js';
-import appRoute from './app-route.js';
+const appDir = app.getAppPath();
 
-import './handlebars-helper.js';
+for (const [name, fn] of Object.entries(helpers)) {
+    hbs.registerHelper(name, fn);
+}
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+function initWindow(html) {
+    const win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+            nodeIntegration: true,
+            contextIsolation: false,
+        }
+    });
 
-app.engine('hbs', engine({ extname: 'hbs' }));
-app.set('view engine', 'hbs');
-app.set('/', path.join(__dirname, 'views'));
+    win.loadURL("data:text/html," + encodeURIComponent(html));
+}
 
-app.use('/', appRoute);
+function renderPage(pageName, data) {
+    const layout = fs.readFileSync(path.join(appDir, "renderer/layouts/layout.hbs"), "utf-8");
+    const page = fs.readFileSync(path.join(appDir, `renderer/pages/${pageName}.hbs`), "utf-8");
+    const compiledLayout = hbs.compile(layout);
+    const compiledPage = hbs.compile(page);
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+    const assetsPath = `file://${path.join(appDir, 'renderer')}`;
+
+    // chèn nội dung trang con vào {{{body}}}
+    return compiledLayout({ ...data, body: compiledPage(data), assetsPath });
+}
+
+loadList().then((res) => {
+    const html = renderPage('home', { layout: 'layout', paginatedData: res });
+    app.whenReady().then(() => { initWindow(html); });
+});
+
+ipcMain.handle("channel.get", async (event, id) => {
+  console.log("Fetching channel with ID:", id);  
 });

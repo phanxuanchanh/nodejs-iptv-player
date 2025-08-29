@@ -1,5 +1,7 @@
-import axios from 'axios';
-import m3u8Parser from 'm3u8-parser';
+const { axios } = require('axios');
+const { m3u8Parser } = require('m3u8-parser');
+
+module.exports = { getChannelsFromM3U8 };
 
 function parseExtinf(line) {
     const regex = /-1\s+tvg-id="([^"]*)"\s+tvg-logo="([^"]*)"\s+group-title="([^"]*)",(.+)/;
@@ -16,7 +18,7 @@ function parseExtinf(line) {
     }
 }
 
-export async function getChannelsFromM3U8(url) {
+async function getChannelsFromM3U8(url) {
     const response = await axios.get(url);
     const m3u8Data = response.data;
 

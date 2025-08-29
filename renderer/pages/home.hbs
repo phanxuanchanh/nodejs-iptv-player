@@ -1,0 +1,38 @@
+<div class="row">
+    {{#each paginatedData.items}}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="channel-card" data-id="{{this.id}}">
+            {{#if this.logo}}
+            <div class="channel-icon" style="background-image:url({{this.logo}});">
+            </div>
+            {{else}}
+            <div class="channel-icon" style="background-color: #90a4ae;">C</div>
+            {{/if}}
+            <div>{{this.name}}</div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        {{#ifCond paginatedData.page '<=' 1}} <a href="#" class="previous round">&#8249;</a>
+            {{else}}
+            <a href="/?page={{math paginatedData.page '-' 1}}&pageSize={{paginatedData.pageSize}}"
+                class="previous round">&#8249;</a>
+            {{/ifCond}}
+            <a href="/?page={{math paginatedData.page '+' 1}}&pageSize={{paginatedData.pageSize}}"
+                class="next round">&#8250;</a>
+    </div>
+</div>
+
+<script>
+    let channelCards = document.querySelectorAll('.channel-card');
+
+    channelCards.forEach((el, index) => {
+        el.addEventListener('click', () => {
+            let id = el.getAttribute('data-id');
+            window.api.getChannel(id);
+        });
+    });
+</script>
