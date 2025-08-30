@@ -16,23 +16,14 @@
 
 <div class="row">
     <div class="col text-center">
-        {{#ifCond paginatedData.page '<=' 1}} <a href="#" class="previous round">&#8249;</a>
-            {{else}}
-            <a href="/?page={{math paginatedData.page '-' 1}}&pageSize={{paginatedData.pageSize}}"
-                class="previous round">&#8249;</a>
-            {{/ifCond}}
-            <a href="/?page={{math paginatedData.page '+' 1}}&pageSize={{paginatedData.pageSize}}"
-                class="next round">&#8250;</a>
+        {{#ifCond paginatedData.page '<=' 1}} 
+        <a href="#" class="previous round">&#8249;</a>
+        {{else}}
+        <a href="#" class="previous round" onclick="getPagination({{math paginatedData.page '-' 1}}, {{ paginatedData.pageSize }});">&#8249;</a>   
+        {{/ifCond}}
+
+        <a href="#" class="next round" onclick="getPagination({{math paginatedData.page '+' 1}}, {{ paginatedData.pageSize }});">&#8250;</a>
     </div>
 </div>
 
-<script>
-    let channelCards = document.querySelectorAll('.channel-card');
-
-    channelCards.forEach((el, index) => {
-        el.addEventListener('click', () => {
-            let id = el.getAttribute('data-id');
-            window.api.getChannel(id);
-        });
-    });
-</script>
+<script src="{{assetsPath}}\pages\home.js"></script>

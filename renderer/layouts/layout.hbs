@@ -2,8 +2,7 @@
 
 <head>
     <title>IPTV Player</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="{{assetsPath}}\bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
@@ -86,7 +85,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#">IPTV Player</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,12 +120,10 @@
             </div>
         </div>
     </nav>
-    <div class="container mt-3">
+    <div class="container-fluid mt-3">
         {{{body}}}
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+e4l5L5zzL5x2Q5p5v5t5p5p5p5p5"
-        crossorigin="anonymous"></script>
+    <script src="{{assetsPath}}\bootstrap.bundle.min.js"></script>
     <script src="{{assetsPath}}\layouts\layout.js"></script>
 </body>
 

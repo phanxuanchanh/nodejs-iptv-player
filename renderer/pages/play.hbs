@@ -2,9 +2,12 @@
     <!-- Left Sidebar: Channel List -->
     <div class="col-md-3 channel-list p-3 bg-dark border-end">
         <h5 class="text-center">Channel List</h5>
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search channels..." value="{{search}}">
         <ul class="list-group">
             {{#each paginatedData.items}}
-            <li class="list-group-item"><a href="/play/{{this.id}}" class="text-decoration-none">{{this.name}}</a></li>
+            <li class="list-group-item channel-item bg-dark" data-id="{{this.id}}">
+                <a href="#" class="text-decoration-none">{{this.name}}</a>
+            </li>
             {{/each}}
         </ul>
     </div>
@@ -12,7 +15,7 @@
     <!-- Right Content: Video Player -->
     <div class="col-md-9 d-flex justify-content-center align-items-left">
         <div class="video-player w-100">
-            <video id="video" class="w-100 h-100" controls data-url="{{item.url}}">
+            <video id="video" class="w-100 h-100" controls data-url="{{item.url}}" data-id="{{item.id}}">
                 <source src="video.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -20,23 +23,7 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="{{assetsPath}}\pages\play.js"></script>
 <script>
-    const video = document.getElementById('video');
-    const videoSrc = video.getAttribute('data-url');;
-
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-            video.play();
-        });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoSrc;
-        video.addEventListener('loadedmetadata', function () {
-            video.play();
-        });
-    } else {
-        alert('Trình duyệt của bạn không hỗ trợ phát video HLS');
-    }
+    
 </script>
