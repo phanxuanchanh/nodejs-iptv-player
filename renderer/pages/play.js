@@ -28,7 +28,7 @@ searchInput.addEventListener('input', (event) => {
                 console.log('Search input:', keyword, result);
             })
             .catch(err => console.error(err));
-    }, 3000);
+    }, 1500);
 });
 
 const video = document.getElementById('video');

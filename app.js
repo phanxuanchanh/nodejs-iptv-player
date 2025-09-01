@@ -26,9 +26,6 @@ function initWindow() {
     return win;
 }
 
-const assetsPath = path.join(appDir, 'renderer');
-console.log('Assets Path:', assetsPath); console.log('Dirname:', path.join(__dirname, "preload.js"));
-
 function renderPage(pageName, data) {
     const layout = fs.readFileSync(path.join(appDir, "renderer/layouts/layout.hbs"), "utf-8");
     const page = fs.readFileSync(path.join(appDir, `renderer/pages/${pageName}.hbs`), "utf-8");
@@ -36,7 +33,7 @@ function renderPage(pageName, data) {
     const compiledPage = hbs.compile(page);
 
     // chèn nội dung trang con vào {{{body}}}
-    return compiledLayout({ ...data, body: compiledPage(data), assetsPath });
+    return compiledLayout({ ...data, body: compiledPage(data) });
 }
 
 const tempDir = path.join(os.tmpdir(), app.getName());
@@ -51,35 +48,68 @@ function saveHtmlToTemp(pageName, html) {
     return outPath;
 }
 
+function getAssetContent(assetName) {
+    const assetContent = fs.readFileSync(path.join(appDir, `renderer\\${assetName}`), "utf-8");
+    return assetContent;
+}
+
 let win = null;
-app.whenReady().then(() => { win = initWindow(''); });
+app.whenReady().then(() => { win = initWindow(); });
+
+const homejs = getAssetContent('pages/home.js');
+const bootstrapcss = getAssetContent('bootstrap.min.css');
+const css = getAssetContent('styles.css');
+const bootstrapjs = getAssetContent('bootstrap.bundle.min.js');
+const layoutJs = getAssetContent('layouts/layout.js');
+const playjs = getAssetContent('pages/play.js');
+
+async function loadWindow(win, html, ...assetContents) {
+    win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+
+    win.webContents.on('did-finish-load', async () => {
+        await win.webContents.insertCSS(bootstrapcss);
+        await win.webContents.insertCSS(css);
+        await win.webContents.executeJavaScript(bootstrapjs);
+        await win.webContents.executeJavaScript(layoutJs);
+
+        for (const content of assetContents) {
+            if (content.type === 'js')
+                await win.webContents.executeJavaScript(content.data);
+            else
+                await win.webContents.insertCSS(content.data);
+        }
+
+        await win.webContents.executeJavaScript('document.documentElement.style.visibility = "visible"');
+    });
+}
 
 loadList().then((res) => {
-    const html = renderPage('home', { layout: 'layout', paginatedData: res, assetsPath });
-    const outPath = saveHtmlToTemp('home', html);
-    win?.loadFile(outPath);
+    const html = renderPage('home', { layout: 'layout', paginatedData: res });
+    loadWindow(win, html, { type: 'js', data: homejs })
+        .then(() => { })
+        .catch((err) => { });
 });
 
-ipcMain.handle("list.load", async (event, search, page, pageSize) => {
+ipcMain.handle("list.load", (event, search, page, pageSize) => {
     loadList(search, page, pageSize).then((res) => {
-        const html = renderPage('home', { layout: 'layout', paginatedData: res, assetsPath });
-        const outPath = saveHtmlToTemp(`home_${page}-${pageSize}-${search}`, html);
-        win?.loadFile(outPath);
+        const html = renderPage('home', { layout: 'layout', paginatedData: res });
+        loadWindow(win, html, { type: 'js', data: homejs })
+            .then(() => { })
+            .catch((err) => { });
     }).catch((err) => { });
+
+    return { status: "success", result: "List data loaded" };
 });
 
-ipcMain.handle("channel.get", async (event, id, search, page, pageSize) => { console.log(id);
+ipcMain.handle("channel.get", (event, id, search, page, pageSize) => {
     getChannel(id).then((res) => {
         loadList(search, page, pageSize).then((listRes) => {
-            const html = renderPage('play', { layout: 'layout', paginatedData: listRes, item: res, assetsPath, search });
-            const outPath = saveHtmlToTemp(`play${id}-${page}-${pageSize}-${search}`, html);
-            win?.loadFile(outPath);
-
-            console.log('Loaded channel page for ID:', id);
-        });
-    }).catch((err) => {
-        console.error('Error loading channel:', err);
-    });
+            const html = renderPage('play', { layout: 'layout', paginatedData: listRes, item: res, search });
+            loadWindow(win, html, { type: 'js', data: playjs })
+                .then(() => { })
+                .catch((err) => { });
+        }).catch((err) => { console.error('Error loading list:', err) });
+    }).catch((err) => { console.error('Error loading channel:', err); });
 
     return { status: "success", result: `Channel data for ID: ${id}` };
 });
