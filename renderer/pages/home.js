@@ -15,5 +15,7 @@ function getPagination(page, pageSize) {
     let loadListPromise = window.api.loadList(null, page, pageSize);
     loadListPromise.then((result) => {
         console.log('Pagination clicked:', page, pageSize, result);
+    }).catch((err) => {
+        alert('Lỗi');
     });
 }

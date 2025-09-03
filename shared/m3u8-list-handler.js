@@ -1,5 +1,5 @@
-const { axios } = require('axios');
-const { m3u8Parser } = require('m3u8-parser');
+const axios = require('axios');
+const m3u8Parser = require('m3u8-parser');
 
 module.exports = { getChannelsFromM3U8 };
 

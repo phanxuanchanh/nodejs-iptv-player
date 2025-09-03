@@ -3,7 +3,11 @@
 <head>
     <title>IPTV Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>html { visibility: hidden; }</style>
+    <style>
+        html {
+            visibility: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -38,13 +42,33 @@
                 <form class="d-flex">
                     <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-search"></i></button>
                     <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-th"></i></button>
-                    <button class="btn btn-outline-light" type="button"><i class="fas fa-ellipsis-v"></i></button>
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal"
+                        data-bs-target="#addM3U8Modal"><i class="fas fa-ellipsis-v"></i></button>
                 </form>
             </div>
         </div>
     </nav>
     <div class="container-fluid mt-3">
         {{{body}}}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addM3U8Modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter M3U8 link</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="m3u8link" value="" placeholder="" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
