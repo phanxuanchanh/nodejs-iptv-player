@@ -1,13 +1,16 @@
-<div class="row mt-2" style="height:100%;">
+<div class="row mt-2 h-100" style="">
     <!-- Left Sidebar: Channel List -->
-    <div class="col-md-3 channel-list p-3 bg-dark border-end">
+    <div class="col-md-3 channel-list p-3">
         <h5 class="text-center">Channel List</h5>
-        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search channels..." value="{{search}}">
-        <ul class="list-group">
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search channels..."
+            value="{{search}}">
+        <ul class="list-group" style="height: 80%; overflow-y:scroll;">
             {{#each paginatedData.items}}
-            <li class="list-group-item channel-item bg-dark" data-id="{{this.id}}">
-                <a href="#" class="text-decoration-none">{{this.name}}</a>
-            </li>
+            <div class="card bg-dark channel-item" data-id="{{this.id}}">
+                <div class="card-body text-white">
+                    {{this.name}}
+                </div>
+            </div>
             {{/each}}
         </ul>
     </div>
@@ -24,5 +27,5 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
-    
+
 </script>

@@ -66,8 +66,7 @@ body {
 }
 
 .channel-list {
-    max-height: 85%;
-    overflow-y: auto;
+    max-height: 100%;
 }
 
 .video-player {

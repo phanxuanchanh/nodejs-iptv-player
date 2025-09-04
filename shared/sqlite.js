@@ -1,3 +1,6 @@
+const { rejects } = require('assert');
+const { resolve } = require('path');
+
 const sqlite3 = require('sqlite3').verbose();
 
 class SqliteExecution {
@@ -20,6 +23,17 @@ class SqliteExecution {
     static async get(query, params = []) {
         return await new Promise((resolve, reject) => {
             SqliteExecution.db.get(query, params, (err, rows) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(rows);
+            });
+        });
+    }
+
+    static async getMany(query) {
+        return await new Promise((resolve, reject) => {
+            SqliteExecution.db.all(query, [], (err, rows) => {
                 if (err)
                     reject(err);
                 else
@@ -67,8 +81,14 @@ class SqliteExecution {
     }
 
     static async insert(query, params = []) {
-        const { lastID } = await SqliteExecution.db.run(query, params);
-        return { id: lastID };
+        return new Promise((resolve, reject) => {
+            SqliteExecution.db.run(query, params, function (err) {
+                if (err) 
+                    return reject(err);
+
+                resolve({ lastID: this.lastID, changes: this.changes });
+            });
+        });
     }
 
     static async bulkInsert(query, data) {
@@ -79,17 +99,4 @@ class SqliteExecution {
     }
 }
 
-async function initTables() {
-    const query = 'CREATE TABLE IF NOT EXISTS all_channels (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, logo TEXT, "group" TEXT, url TEXT)'
-
-    return await new Promise((resolve, reject) => {
-        SqliteExecution.db.run(query, function (err) {
-            if (err)
-                reject(err);
-            else
-                resolve({ changes: this.changes, lastID: this.lastID });
-        });
-    });
-}
-
-module.exports = { SqliteExecution, initTables };
+module.exports = SqliteExecution;

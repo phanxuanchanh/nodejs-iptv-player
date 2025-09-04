@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <title>IPTV Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        html {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card bg-dark my-5 mx-5">
+        <div class="card-body">
+            <h3 class="text-center text-white">Enter M3U link</h3>
+            <div class="form-group">
+                <input type="text" class="form-control" id="m3u8link" value="" placeholder="https://example.com/index.m3u">
+            </div>
+        </div>
+    </div>
+
+    {{#ifCond list.length '!==' 0 }}
+    <div class="card bg-dark mt-3 mb-5 mx-5">
+        <div class="card-body">
+            <h3 class="text-center text-white">Select list</h3>
+            <ul>
+                {{#each list}}
+                <li class="text-white m3u-url-file" data-id="{{this.id}}">{{this.urlOrFileName}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    {{/ifCond}}
+</body>

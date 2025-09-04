@@ -22,6 +22,16 @@ class PageRender {
 
         return compiledLayout({ ...data, body: compiledPage(data) });
     }
+
+    renderPageNoLayout(path, pageName, data = {}) {
+        const filePath = `${this.appPath}${path}${pageName}.hbs`;
+        const page = fs.readFileSync(filePath, 'utf-8')
+
+        data.layout = null;
+        const compiledPage = hbs.compile(page);
+
+        return compiledPage(data);
+    }
 }
 
 module.exports = PageRender;

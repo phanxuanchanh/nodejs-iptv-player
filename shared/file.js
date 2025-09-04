@@ -6,6 +6,11 @@ class FileManager {
         this.appPath = appPath;
     }
 
+    getFileContent(filePath, fileName) {
+        const content = fs.readFileSync(path.join(this.appPath, `${filePath}${fileName}`), "utf-8");
+        return content;
+    }
+
     getAssetContent(assetName) {
         const assetContent = fs.readFileSync(path.join(this.appPath, `renderer\\${assetName}`), "utf-8");
         return assetContent;

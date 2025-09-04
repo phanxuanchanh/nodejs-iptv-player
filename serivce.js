@@ -1,12 +1,17 @@
 const { getChannelsFromM3U8 } = require('./shared/m3u8-list-handler.js');
-const { SqliteExecution } = require('./shared/sqlite.js');
+const SqliteExecution = require('./shared/sqlite.js');
 
 class Service {
-    static async loadList(search = null, page = 1, pageSize = 24) {
+    static async loadList() {
+        const query = 'SELECT * FROM all_lists';
+        return await SqliteExecution.getMany(query);
+    }
+
+    static async loadChannels(listId, search = null, page = 1, pageSize = 24) {
         let paginatedData = null;
         if (search) {
-            const where = 'name LIKE ? OR "group" LIKE ?';
-            const whereParams = [`%${search}%`, `%${search}%`];
+            const where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
+            const whereParams = [`%${search}%`, `%${search}%`, listId];
             paginatedData = await SqliteExecution.getPaginatedData2('all_channels', where, whereParams, page || 1, pageSize || 16);
         } else {
             paginatedData = await SqliteExecution.getPaginatedData1('all_channels', page || 1, pageSize || 16);
@@ -26,17 +31,30 @@ class Service {
     }
 
     static async addFromUrl(url) {
-        const channels = await getChannelsFromM3U8(url);
-        const query = 'INSERT INTO all_channels (name, logo, "group", url) VALUES (?, ?, ?, ?)';
-        const data = [];
+        try {
+            SqliteExecution.db.run('BEGIN TRANSACTION');
 
-        channels.forEach(channel => {
-            data.push([channel.name, channel.logo, channel.group, channel.url]);
-        })
+            const addListTableQuery = 'INSERT INTO all_lists (urlOrFileName) VALUES (?)'
+            const itemData = [url];
+            const res = await SqliteExecution.insert(addListTableQuery, itemData);
 
+            console.log(res.lastID);
 
-        console.log(data);
-        const qres = await SqliteExecution.bulkInsert(query, data);
+            const channels = await getChannelsFromM3U8(url);
+            const addChannelsQuery = 'INSERT INTO all_channels (name, logo, "group", url, list_id) VALUES (?, ?, ?, ?, ?)';
+            const channelItems = [];
+
+            channels.forEach(channel => {
+                channelItems.push([channel.name, channel.logo, channel.group, channel.url, res.lastID]);
+            })
+
+            const qres = await SqliteExecution.bulkInsert(addChannelsQuery, channelItems);
+
+            SqliteExecution.db.run('COMMIT');
+        } catch (e) {
+            SqliteExecution.db.run('ROLLBACK');
+            throw e;
+        }
     }
 }
 
