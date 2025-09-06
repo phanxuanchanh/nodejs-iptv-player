@@ -11,11 +11,6 @@ class FileManager {
         return content;
     }
 
-    getAssetContent(assetName) {
-        const assetContent = fs.readFileSync(path.join(this.appPath, `renderer\\${assetName}`), "utf-8");
-        return assetContent;
-    }
-
     static createDir(path) {
         if (!fs.existsSync(path))
             fs.mkdirSync(path, { recursive: true });

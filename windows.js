@@ -13,8 +13,9 @@ class Window {
 
     init() {
         this.win = new BrowserWindow({
-            width: 800,
+            width: 900,
             height: 600,
+            resizable: true,
             webPreferences: {
                 preload: path.join(__dirname, "preload.js"),
                 nodeIntegration: false,
@@ -25,10 +26,10 @@ class Window {
 
     async loadDefaultAssets() {
         if (!this.defaultAssetLoaded) {
-            const bootstrapcss = this.fileManager.getAssetContent('bootstrap.min.css');
-            const css = this.fileManager.getAssetContent('styles.css');
-            const bootstrapjs = this.fileManager.getAssetContent('bootstrap.bundle.min.js');
-            const layoutJs = this.fileManager.getAssetContent('layouts/layout.js');
+            const bootstrapcss = this.fileManager.getFileContent('/renderer/', 'bootstrap.min.css');
+            const css = this.fileManager.getFileContent('/renderer/', 'styles.css');
+            const bootstrapjs = this.fileManager.getFileContent('/renderer/', 'bootstrap.bundle.min.js');
+            const layoutJs = this.fileManager.getFileContent('/renderer/', 'layouts/layout.js');
 
             this.win.webContents.on('did-finish-load', async () => {
                 await this.win.webContents.insertCSS(bootstrapcss);

@@ -29,12 +29,12 @@ SqliteExecution.openDatabase(`${tempPath}\\app.db`)
                 console.debug('All tables are created');
         });
     }).catch((err) => {
-        window.showMsgBox('info', 'Error', 'Khởi tạo CSDL đã thất bại', ['OK']);
+        window.showMsgBox('info', 'Error', `Error opening or populating the database: ${err}`, ['OK']);
         console.debug(err);
     });
 
-const homejs = fileManager.getAssetContent('pages/home.js');
-const playjs = fileManager.getAssetContent('pages/play.js');
+const homejs = fileManager.getFileContent('renderer/pages/', 'home.js');
+const playjs = fileManager.getFileContent('renderer/pages/', 'play.js');
 const importAndSelectJs = fileManager.getFileContent('/renderer/pages-nolayout/', 'import-select.js');
 
 const selectedListId = store.get('list.selected');
