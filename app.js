@@ -1,4 +1,4 @@
-const { app, ipcMain } = require("electron");
+const { app, ipcMain, shell } = require("electron");
 const os = require("os");
 const path = require("path");
 const Window = require('./windows.js');
@@ -7,6 +7,7 @@ const SqliteExecution = require('./shared/sqlite.js');
 const FileManager = require('./shared/file.js');
 const Service = require("./serivce.js");
 const Store = require('electron-store').default;
+const Handler = require('./handler.js');
 
 const appPath = app.getAppPath();
 const tempPath = path.join(os.tmpdir(), app.getName());
@@ -14,6 +15,7 @@ const pageRender = new PageRender(appPath);
 const window = new Window(appPath);
 const fileManager = new FileManager(appPath);
 const store = new Store();
+const handler = Handler.Init(window, pageRender, fileManager);
 
 pageRender.setHelpers();
 app.whenReady().then(() => { window.init(); });
@@ -33,62 +35,34 @@ SqliteExecution.openDatabase(`${tempPath}\\app.db`)
         console.debug(err);
     });
 
-const homejs = fileManager.getFileContent('renderer/pages/', 'home.js');
-const playjs = fileManager.getFileContent('renderer/pages/', 'play.js');
-const importAndSelectJs = fileManager.getFileContent('/renderer/pages-nolayout/', 'import-select.js');
-
 const selectedListId = store.get('list.selected');
 
-async function firstLoad() {
-    const playlists = await Service.loadPlaylists();
-
-    if (selectedListId) {
-        const paged = await Service.loadChannels(selectedListId);
-        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged, playlists: playlists });
-        await window.load(html, { type: 'js', data: homejs });
-    } else {
-        const list = await Service.loadList();
-        const html = pageRender.renderPageNoLayout('/renderer/pages-nolayout/', 'import-select', { playlists: playlists });
-
-        await window.load(html, { type: 'js', data: importAndSelectJs });
-    }
-}
-
 setTimeout(() => {
-    firstLoad()
-        .catch((err) => {
+    if (selectedListId)
+        handler.loadChannels(selectedListId).catch((err) => {
             window.showMsgBox('info', 'Error', '', ['OK'])
             console.debug(err);
         });
+    else
+        handler.loadImportAndSelectPlaylist();
 }, 3000);
 
 
-ipcMain.handle("list.load", async (event, search, page, pageSize) => {
+ipcMain.on("list.load", async (event, search, page, pageSize) => {
     try {
-        const playlists = await Service.loadPlaylists();
-
-        const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
-        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged, playlists: playlists });
-        await window.load(html, { type: 'js', data: homejs });
-
-        //return { status: "success", result: "List data loaded" };
+        await handler.loadChannels(selectedListId, search, page, pageSize);
     } catch (err) {
-        console.log(err.message);
-        //return { status: "success", result: err.message };
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
     }
 });
 
-ipcMain.handle("channel.get", async (event, id, search, page, pageSize) => {
+ipcMain.on("channel.get", async (event, id, search, page, pageSize) => {
     try {
-        const playlists = await Service.loadPlaylists();
-        const channel = await Service.getChannel(id);
-        const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
-        const html = pageRender.renderPage('play', { layout: 'layout', paginatedData: paged, item: channel, search, playlists });
-        await window.load(html, { type: 'js', data: playjs });
-
-        //return { status: "success", result: `Channel data for ID: ${id}` };
+        await handler.loadChannel(selectedListId, id, search, page, pageSize);
     } catch (err) {
-        //return { status: "success", result: err.message };
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
     }
 });
 
@@ -109,4 +83,12 @@ ipcMain.handle('list.select', async (event, id) => {
     SqliteExecution.closeDatabase();
     app.relaunch();
     app.exit(0);
+});
+
+ipcMain.handle('goto.about', async (event) => {
+    await handler.loadAbout();
+});
+
+ipcMain.on('link.open', async (event, url) => {
+    await shell.openExternal(url);
 });

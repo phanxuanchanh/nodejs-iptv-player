@@ -7,19 +7,17 @@
         html {
             visibility: hidden;
         }
-
-        .btn-func {
-            background-color: #393434
-        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-dark px-3 sticky-top py-3">
+        {{#ifCond enableBackBtn '===' true}}
         <!-- Back -->
         <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-back">
             <i class="fa fa-lg fa-arrow-left"></i>
         </button>
+        {{/ifCond}}
 
         <!-- Các chức năng chính -->
         <div class="d-flex flex-wrap align-items-center">
@@ -47,12 +45,15 @@
                 {{/each}}
             </select>
 
-            <button class="btn btn-sm p-2 text-white btn-func" data-bs-toggle="modal" data-bs-target="#addM3U8Modal">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" data-bs-toggle="modal" data-bs-target="#addM3U8Modal">
                 <i class="fa fa-lg fa-plus"></i>
+            </button>
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about">
+                <i class="fa fa-lg fa-info"></i>
             </button>
         </div>
     </nav>
-    
+
     <div class="container-fluid mt-3">
         {{{body}}}
     </div>
@@ -62,7 +63,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header">
-                    <h5 class="modal-title">Enter M3U8 link</h5>
+                    <h5 class="modal-title">Enter M3U link</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -71,28 +72,6 @@
                 <div class="modal-footer">
                     <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Playlists Modal -->
-    <div class="modal fade" id="PlaylistsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-light">
-                <div class="modal-header">
-                    <h5 class="modal-title">Select M3U Playlist</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <u>
-                        {{#each playlists}}
-                        <li class="text-white m3u-url-file" data-id="{{this.id}}">{{this.urlOrFileName}}</li>
-                        {{/each}}
-                    </u>
-                </div>
-                <div class="modal-footer">
-
                 </div>
             </div>
         </div>

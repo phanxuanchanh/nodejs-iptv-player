@@ -29,13 +29,13 @@ class Window {
             const bootstrapcss = this.fileManager.getFileContent('/renderer/', 'bootstrap.min.css');
             const css = this.fileManager.getFileContent('/renderer/', 'styles.css');
             const bootstrapjs = this.fileManager.getFileContent('/renderer/', 'bootstrap.bundle.min.js');
-            const layoutJs = this.fileManager.getFileContent('/renderer/', 'layouts/layout.js');
+            const rendererJs = this.fileManager.getFileContent('/renderer/', 'renderer.js');
 
             this.win.webContents.on('did-finish-load', async () => {
                 await this.win.webContents.insertCSS(bootstrapcss);
                 await this.win.webContents.insertCSS(css);
                 await this.win.webContents.executeJavaScript(bootstrapjs);
-                await this.win.webContents.executeJavaScript(layoutJs);
+                await this.win.webContents.executeJavaScript(rendererJs);
             });
 
             this.defaultAssetLoaded = true;
