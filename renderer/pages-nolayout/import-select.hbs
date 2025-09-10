@@ -20,12 +20,12 @@
         </div>
     </div>
 
-    {{#ifCond list.length '!==' 0 }}
+    {{#ifCond playlists.length '!==' 0 }}
     <div class="card bg-dark mt-3 mb-5 mx-5">
         <div class="card-body">
             <h3 class="text-center text-white">Select list</h3>
             <ul>
-                {{#each list}}
+                {{#each playlists}}
                 <li class="text-white m3u-url-file" data-id="{{this.id}}">{{this.urlOrFileName}}</li>
                 {{/each}}
             </ul>

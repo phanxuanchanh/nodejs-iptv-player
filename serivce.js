@@ -2,7 +2,7 @@ const { getChannelsFromM3U8 } = require('./shared/m3u8-list-handler.js');
 const SqliteExecution = require('./shared/sqlite.js');
 
 class Service {
-    static async loadList() {
+    static async loadPlaylists() {
         const query = 'SELECT * FROM all_lists';
         return await SqliteExecution.getMany(query);
     }
@@ -30,7 +30,7 @@ class Service {
         return item;
     }
 
-    static async addFromUrl(url) {
+    static async addPlaylist(url) {
         try {
             SqliteExecution.db.run('BEGIN TRANSACTION');
 

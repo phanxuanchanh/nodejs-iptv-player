@@ -40,13 +40,15 @@ const importAndSelectJs = fileManager.getFileContent('/renderer/pages-nolayout/'
 const selectedListId = store.get('list.selected');
 
 async function firstLoad() {
+    const playlists = await Service.loadPlaylists();
+
     if (selectedListId) {
         const paged = await Service.loadChannels(selectedListId);
-        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged });
+        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged, playlists: playlists });
         await window.load(html, { type: 'js', data: homejs });
     } else {
         const list = await Service.loadList();
-        const html = pageRender.renderPageNoLayout('/renderer/pages-nolayout/', 'import-select', { list: list });
+        const html = pageRender.renderPageNoLayout('/renderer/pages-nolayout/', 'import-select', { playlists: playlists });
 
         await window.load(html, { type: 'js', data: importAndSelectJs });
     }
@@ -63,8 +65,10 @@ setTimeout(() => {
 
 ipcMain.handle("list.load", async (event, search, page, pageSize) => {
     try {
+        const playlists = await Service.loadPlaylists();
+
         const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
-        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged });
+        const html = pageRender.renderPage('home', { layout: 'layout', paginatedData: paged, playlists: playlists });
         await window.load(html, { type: 'js', data: homejs });
 
         //return { status: "success", result: "List data loaded" };
@@ -76,9 +80,10 @@ ipcMain.handle("list.load", async (event, search, page, pageSize) => {
 
 ipcMain.handle("channel.get", async (event, id, search, page, pageSize) => {
     try {
+        const playlists = await Service.loadPlaylists();
         const channel = await Service.getChannel(id);
         const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
-        const html = pageRender.renderPage('play', { layout: 'layout', paginatedData: paged, item: channel, search });
+        const html = pageRender.renderPage('play', { layout: 'layout', paginatedData: paged, item: channel, search, playlists });
         await window.load(html, { type: 'js', data: playjs });
 
         //return { status: "success", result: `Channel data for ID: ${id}` };

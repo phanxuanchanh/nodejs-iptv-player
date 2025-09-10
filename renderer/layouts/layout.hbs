@@ -7,46 +7,52 @@
         html {
             visibility: hidden;
         }
+
+        .btn-func {
+            background-color: #393434
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">IPTV Player</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark px-3 sticky-top py-3">
+        <!-- Back -->
+        <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-back">
+            <i class="fa fa-lg fa-arrow-left"></i>
+        </button>
+
+        <!-- Các chức năng chính -->
+        <div class="d-flex flex-wrap align-items-center">
+            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite">
+                <i class="fa fa-lg fa-heart"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Favorites</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">All Channels</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                            <li><a class="dropdown-item" href="#">Music</a></li>
-                            <li><a class="dropdown-item" href="#">Sports</a></li>
-                            <li><a class="dropdown-item" href="#">Films</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="d-flex">
-                    <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-search"></i></button>
-                    <button class="btn btn-outline-light me-2" type="button"><i class="fas fa-th"></i></button>
-                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal"
-                        data-bs-target="#addM3U8Modal"><i class="fas fa-ellipsis-v"></i></button>
-                </form>
-            </div>
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels">
+                <i class="fa fa-lg fa-tv"></i>
+            </button>
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories">
+                <i class="fa fa-lg fa-list"></i>
+            </button>
+        </div>
+
+        <!-- Bên phải: search và playlist -->
+        <div class="ms-auto d-flex align-items-center">
+            <!-- Search -->
+            <input class="form-control form-control-sm me-2" type="search" placeholder="Search" aria-label="Search">
+
+            <!-- Chọn playlist -->
+            <select class="form-select form-select-sm me-2" id="selectPlaylist" style="width: 150px;">
+                <option>Choose playlist</option>
+                {{#each playlists}}
+                <option value="{{this.id}}">{{this.urlOrFileName}}</option>
+                {{/each}}
+            </select>
+
+            <button class="btn btn-sm p-2 text-white btn-func" data-bs-toggle="modal" data-bs-target="#addM3U8Modal">
+                <i class="fa fa-lg fa-plus"></i>
+            </button>
         </div>
     </nav>
+    
     <div class="container-fluid mt-3">
         {{{body}}}
     </div>
@@ -65,6 +71,28 @@
                 <div class="modal-footer">
                     <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlists Modal -->
+    <div class="modal fade" id="PlaylistsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select M3U Playlist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <u>
+                        {{#each playlists}}
+                        <li class="text-white m3u-url-file" data-id="{{this.id}}">{{this.urlOrFileName}}</li>
+                        {{/each}}
+                    </u>
+                </div>
+                <div class="modal-footer">
+
                 </div>
             </div>
         </div>
