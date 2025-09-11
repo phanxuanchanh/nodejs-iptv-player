@@ -1,3 +1,5 @@
+const i18next = require('i18next');
+
 module.exports = {
     ifCond: function (v1, operator, v2, options) {
         switch (operator) {
@@ -54,5 +56,6 @@ module.exports = {
             default:
                 throw new Error(`Operator ${operator} is not supported`);
         }
-    }
+    },
+    t: (key) => i18next.t(key)
 }

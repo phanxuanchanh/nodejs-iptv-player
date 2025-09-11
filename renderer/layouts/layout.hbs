@@ -21,7 +21,7 @@
 
         <!-- Các chức năng chính -->
         <div class="d-flex flex-wrap align-items-center">
-            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="Favorite list">
+            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="{{t 'favorite-list-btn'}}">
                 <i class="fa fa-lg fa-heart"></i>
             </button>
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="All channels">
@@ -66,6 +66,10 @@
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about" title="About This App">
                 <i class="fa fa-lg fa-info"></i>
             </button>
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="settings" title="{{t 'settings-btn'}}"
+                data-bs-toggle="modal" data-bs-target="#settingsModal" title="Add M3U link">
+                <i class="fas fa-lg fa-ellipsis-v"></i>
+            </button>
         </div>
     </nav>
 
@@ -83,6 +87,29 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control" id="m3u8link" value="" placeholder="" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'setting-modal-title'}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label>{{t 'select-language'}}</label>
+                    <select>
+                        <option>English</option>
+                        <option>Tiếng Việt</option>
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>

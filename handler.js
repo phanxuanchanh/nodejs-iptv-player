@@ -2,6 +2,7 @@ const { BrowserWindow } = require("electron");
 const Service = require("./serivce.js");
 const PageRender = require("./shared/page-render");
 const FileManager = require("./shared/file.js");
+const i18next = require('i18next');
 
 /**
  * 

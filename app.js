@@ -8,6 +8,8 @@ const FileManager = require('./shared/file.js');
 const Service = require("./serivce.js");
 const Store = require('electron-store').default;
 const Handler = require('./handler.js');
+const i18next = require('i18next');
+const Backend = require('i18next-fs-backend');
 
 const appPath = app.getAppPath();
 const tempPath = path.join(os.tmpdir(), app.getName());
@@ -19,6 +21,13 @@ const store = new Store();
 pageRender.setHelpers();
 app.whenReady().then(() => { window.init(); });
 FileManager.createDir(tempPath);
+
+i18next.use(Backend).init({
+    lng: 'en', //app.getLocale(), // hoặc 'en', 'vi', ...
+    backend: {
+        loadPath: path.join(__dirname, 'locales/{{lng}}.json')
+    }
+});
 
 SqliteExecution.openDatabase(`${tempPath}\\app.db`)
     .then(() => {
