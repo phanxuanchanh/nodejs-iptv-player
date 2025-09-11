@@ -77,3 +77,8 @@ body {
 .btn-func {
     background-color: #393434
 }
+
+#btn-categories + .dropdown-menu .dropdown-item:hover {
+    background-color: #0d0e0d;
+    color: #fff;
+  }

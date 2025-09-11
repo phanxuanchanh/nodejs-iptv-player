@@ -3,10 +3,13 @@ const Service = require("./serivce.js");
 const PageRender = require("./shared/page-render");
 const FileManager = require("./shared/file.js");
 
+/**
+ * 
+ */
 class Handler {
     /**
      * 
-     * @param {BrowserWindow} window 
+     * @param {Window} window 
      * @param {PageRender} pageRender
      * @param {FileManager} fileManager
      * @param {[]} playlists 
@@ -20,7 +23,7 @@ class Handler {
 
     /**
      * 
-     * @param {BrowserWindow} window 
+     * @param {Window} window 
      * @param {PageRender} pageRender 
      * @param {FileManager} fileManager 
      * @returns {Handler}
@@ -35,17 +38,33 @@ class Handler {
         return handler;
     }
 
+    /**
+     * 
+     * @param {int} selectedListId 
+     * @param {string} search 
+     * @param {int} page 
+     * @param {intint} pageSize 
+     */
     async loadChannels(selectedListId, search = null, page = 1, pageSize = 24) {
         const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
         const html = this.pageRender.renderPage('home', {
             layout: 'layout',
             paginatedData: paged,
             playlists: this.playlists,
+            selectedPlaylistId: selectedListId,
             enableBackBtn: false
         });
         await this.window.load(html);
     }
 
+    /**
+     * 
+     * @param {int} selectedListId 
+     * @param {int} id 
+     * @param {string} search 
+     * @param {int} page 
+     * @param {int} pageSize 
+     */
     async loadChannel(selectedListId, id, search = null, page = 1, pageSize = 24) {
         const channel = await Service.getChannel(id);
         const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
@@ -55,6 +74,7 @@ class Handler {
             item: channel, 
             search, 
             playlists: this.playlists,
+            selectedPlaylistId: selectedListId,
             enableBackBtn: true
         });
         await this.window.load(html);

@@ -7,7 +7,6 @@ class Window {
     constructor(appPath) {
         this.appPath = appPath;
         this.win = undefined;
-        this.defaultAssetLoaded = false;
         this.fileManager = new FileManager(appPath);
     }
 
@@ -25,35 +24,28 @@ class Window {
     }
 
     async loadDefaultAssets() {
-        if (!this.defaultAssetLoaded) {
-            const bootstrapcss = this.fileManager.getFileContent('/renderer/', 'bootstrap.min.css');
-            const css = this.fileManager.getFileContent('/renderer/', 'styles.css');
-            const bootstrapjs = this.fileManager.getFileContent('/renderer/', 'bootstrap.bundle.min.js');
-            const rendererJs = this.fileManager.getFileContent('/renderer/', 'renderer.js');
+            const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');
+            const css = this.fileManager.getFileContent('/renderer/css/', 'styles.css');
+            const bootstrapjs = this.fileManager.getFileContent('/renderer/js/', 'bootstrap.bundle.min.js');
+            const rendererJs = this.fileManager.getFileContent('/renderer/js/', 'renderer.js');
 
-            this.win.webContents.on('did-finish-load', async () => {
-                await this.win.webContents.insertCSS(bootstrapcss);
-                await this.win.webContents.insertCSS(css);
-                await this.win.webContents.executeJavaScript(bootstrapjs);
-                await this.win.webContents.executeJavaScript(rendererJs);
-            });
-
-            this.defaultAssetLoaded = true;
-        }
+            await this.win.webContents.insertCSS(bootstrapcss);
+            await this.win.webContents.insertCSS(css);
+            await this.win.webContents.executeJavaScript(bootstrapjs);
+            await this.win.webContents.executeJavaScript(rendererJs);
     }
 
     async load(html, ...assetContents) {
-        this.win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+        await this.win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
         await this.loadDefaultAssets();
-        this.win.webContents.on('did-finish-load', async () => {
-            for (const content of assetContents) {
-                if (content.type === 'js')
-                    await this.win.webContents.executeJavaScript(content.data);
-                else
-                    await this.win.webContents.insertCSS(content.data);
-            }
-            await this.win.webContents.executeJavaScript('document.documentElement.style.visibility = "visible"');
-        });
+
+        for (const content of assetContents) {
+            if (content.type === 'js')
+                await this.win.webContents.executeJavaScript(content.data);
+            else
+                await this.win.webContents.insertCSS(content.data);
+        }
+        await this.win.webContents.executeJavaScript('document.documentElement.style.visibility = "visible"');
     }
 
     async showMsgBox(type, title, message, buttons) {

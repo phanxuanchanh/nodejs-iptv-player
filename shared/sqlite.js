@@ -1,11 +1,12 @@
-const { rejects } = require('assert');
-const { resolve } = require('path');
-
 const sqlite3 = require('sqlite3').verbose();
 
 class SqliteExecution {
     static db;
 
+    /**
+     * 
+     * @param {string} path 
+     */
     static async openDatabase(path) {
         SqliteExecution.db = new sqlite3.Database(path, (err) => {
             if (err) {
@@ -17,23 +18,42 @@ class SqliteExecution {
     }
 
     static async closeDatabase() {
-        await SqliteExecution.db.close();
-    }
-
-    static async get(query, params = []) {
-        return await new Promise((resolve, reject) => {
-            SqliteExecution.db.get(query, params, (err, rows) => {
+        return new Promise((resolve, reject) => {
+            SqliteExecution.db.close(err => {
                 if (err)
                     reject(err);
                 else
-                    resolve(rows);
+                    resolve();
             });
         });
     }
 
-    static async getMany(query) {
+    /**
+     * 
+     * @param {string} query 
+     * @param {any[]} params 
+     * @returns {Promise<any>}
+     */
+    static async get(query, params = []) {
         return await new Promise((resolve, reject) => {
-            SqliteExecution.db.all(query, [], (err, rows) => {
+            SqliteExecution.db.get(query, params, (err, row) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(row);
+            });
+        });
+    }
+
+    /**
+     * 
+     * @param {string} query 
+     * @param {any[]} params 
+     * @returns {Promise<any[]>}
+     */
+    static async getMany(query, params = []) {
+        return await new Promise((resolve, reject) => {
+            SqliteExecution.db.all(query, params, (err, rows) => {
                 if (err)
                     reject(err);
                 else
@@ -83,7 +103,7 @@ class SqliteExecution {
     static async insert(query, params = []) {
         return new Promise((resolve, reject) => {
             SqliteExecution.db.run(query, params, function (err) {
-                if (err) 
+                if (err)
                     return reject(err);
 
                 resolve({ lastID: this.lastID, changes: this.changes });
@@ -91,11 +111,37 @@ class SqliteExecution {
         });
     }
 
+    /**
+     * 
+     * @param {string} query 
+     * @param {any[]} data 
+     * @returns {Promise<{rows: number}>}
+     */
     static async bulkInsert(query, data) {
-        const stmt = await SqliteExecution.db.prepare(query);
-        await stmt.run(...data.map(row => stmt.run(...row)));
-        await stmt.finalize();
-        return { rows: data.length };
+        return new Promise((resolve, reject) => {
+            SqliteExecution.db.run("BEGIN TRANSACTION");
+            const stmt = SqliteExecution.db.prepare(query);
+
+            data.forEach(row => {
+                stmt.run(row, err => {
+                    if (err) {
+                        SqliteExecution.db.run("ROLLBACK");
+                        reject(err);
+                    }
+                });
+            });
+
+            stmt.finalize(err => {
+                if (err) {
+                    SqliteExecution.db.run("ROLLBACK");
+                    return reject(err);
+                }
+                SqliteExecution.db.run("COMMIT", err2 => {
+                    if (err2) reject(err2);
+                    else resolve({ rows: data.length });
+                });
+            });
+        });
     }
 }
 

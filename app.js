@@ -15,7 +15,6 @@ const pageRender = new PageRender(appPath);
 const window = new Window(appPath);
 const fileManager = new FileManager(appPath);
 const store = new Store();
-const handler = Handler.Init(window, pageRender, fileManager);
 
 pageRender.setHelpers();
 app.whenReady().then(() => { window.init(); });
@@ -35,16 +34,19 @@ SqliteExecution.openDatabase(`${tempPath}\\app.db`)
         console.debug(err);
     });
 
+const handler = Handler.Init(window, pageRender, fileManager);
 const selectedListId = store.get('list.selected');
 
-setTimeout(() => {
-    if (selectedListId)
-        handler.loadChannels(selectedListId).catch((err) => {
-            window.showMsgBox('info', 'Error', '', ['OK'])
-            console.debug(err);
-        });
-    else
-        handler.loadImportAndSelectPlaylist();
+setTimeout(async () => {
+    try {
+        if (selectedListId)
+            await handler.loadChannels(selectedListId);
+        else
+            await handler.loadImportAndSelectPlaylist();
+    } catch (err) {
+        window.showMsgBox('info', 'Error', err.message, ['OK'])
+        console.debug(err);
+    }
 }, 3000);
 
 
@@ -85,7 +87,7 @@ ipcMain.handle('list.select', async (event, id) => {
     app.exit(0);
 });
 
-ipcMain.handle('goto.about', async (event) => {
+ipcMain.on('goto.about', async (event) => {
     await handler.loadAbout();
 });
 

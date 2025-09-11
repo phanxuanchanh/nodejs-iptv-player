@@ -14,22 +14,30 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-dark px-3 sticky-top py-3">
         {{#ifCond enableBackBtn '===' true}}
         <!-- Back -->
-        <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-back">
+        <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-back" title="Go back">
             <i class="fa fa-lg fa-arrow-left"></i>
         </button>
         {{/ifCond}}
 
         <!-- Các chức năng chính -->
         <div class="d-flex flex-wrap align-items-center">
-            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite">
+            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="Favorite list">
                 <i class="fa fa-lg fa-heart"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="All channels">
                 <i class="fa fa-lg fa-tv"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories">
-                <i class="fa fa-lg fa-list"></i>
-            </button>
+            <div class="dropdown">
+                <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories" data-bs-toggle="dropdown"
+                    aria-expanded="false" title="Categories">
+                    <i class="fa fa-lg fa-list"></i>
+                </button>
+                <ul class="dropdown-menu bg-dark" aria-labelledby="btn-categories">
+                    <li><a class="dropdown-item text-white" href="#">Item 1</a></li>
+                    <li><a class="dropdown-item text-white" href="#">Item 2</a></li>
+                    <li><a class="dropdown-item text-white" href="#">Item 3</a></li>
+                </ul>
+            </div>
         </div>
 
         <!-- Bên phải: search và playlist -->
@@ -39,16 +47,23 @@
 
             <!-- Chọn playlist -->
             <select class="form-select form-select-sm me-2" id="selectPlaylist" style="width: 150px;">
-                <option>Choose playlist</option>
                 {{#each playlists}}
+                {{#if selectedPlaylistId}}
+                <option>Choose playlist</option>
+                {{/if}}
+                {{#ifCond this.id '===' selectedPlaylistId}}
+                <option value="{{this.id}}" selected>{{this.urlOrFileName}}</option>
+                {{else}}
                 <option value="{{this.id}}">{{this.urlOrFileName}}</option>
+                {{/ifCond}}
                 {{/each}}
             </select>
 
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" data-bs-toggle="modal" data-bs-target="#addM3U8Modal">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" data-bs-toggle="modal"
+                data-bs-target="#addM3U8Modal" title="Add M3U link">
                 <i class="fa fa-lg fa-plus"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about" title="About This App">
                 <i class="fa fa-lg fa-info"></i>
             </button>
         </div>
