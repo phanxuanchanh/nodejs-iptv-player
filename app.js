@@ -93,11 +93,11 @@ ipcMain.on("channel.get", async (event, id, search, page, pageSize) => {
     }
 });
 
-ipcMain.handle('add.m3u8.link', async (event, url) => {
+ipcMain.handle('add.m3u8.link', async (event, name, url) => {
     if (url === null || url === undefined || url === '')
         window.showMsgBox('info', 'Invalid data', 'URL cannot be null, empty, or undefined', ['OK'])
 
-    await Service.addFromUrl(url);
+    await Service.addPlaylist(name, url);
 
     SqliteExecution.closeDatabase();
     app.relaunch();

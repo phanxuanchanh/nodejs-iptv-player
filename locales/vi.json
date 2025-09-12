@@ -1,6 +1,12 @@
 {
     "favorite-list-btn": "Danh sách yêu thích",
     "settings-btn": "Thiết lập",
+    "main-search-input-placeholder": "Tìm kiếm",
+    "add-m3u-link-btn": "Thêm link M3U",
+    "about-btn": "Về ứng dụng này",
     "setting-modal-title": "Thiết lập",
-    "select-language": "Chọn ngôn ngữ:"
+    "select-language": "Chọn ngôn ngữ:",
+
+    "m3u-name": "Tên M3U",
+    "m3u-link": "Link M3U"
 }

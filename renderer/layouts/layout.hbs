@@ -23,7 +23,7 @@
             <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="{{t 'favorite-list-btn'}}">
                 <i class="fa fa-heart"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="All channels">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="{{t 'all-channels-btn'}}">
                 <i class="fa fa-tv"></i>
             </button>
             <div class="dropdown">
@@ -42,7 +42,7 @@
         <!-- Bên phải: search và playlist -->
         <div class="ms-auto d-flex align-items-center">
             <!-- Search -->
-            <input class="form-control form-control-sm me-2" type="search" placeholder="Search" aria-label="Search">
+            <input class="form-control form-control-sm me-2" id="mainSearch" type="search" placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search">
 
             <!-- Chọn playlist -->
             <select class="form-select form-select-sm me-2" id="selectPlaylist" style="width: 150px;">
@@ -51,18 +51,18 @@
                 <option>Choose playlist</option>
                 {{/if}}
                 {{#ifCond this.id '===' selectedPlaylistId}}
-                <option value="{{this.id}}" selected>{{this.urlOrFileName}}</option>
+                <option value="{{this.id}}" selected>{{this.name}}</option>
                 {{else}}
-                <option value="{{this.id}}">{{this.urlOrFileName}}</option>
+                <option value="{{this.id}}">{{this.name}}</option>
                 {{/ifCond}}
                 {{/each}}
             </select>
 
             <button class="btn btn-sm me-2 p-2 text-white btn-func" data-bs-toggle="modal"
-                data-bs-target="#addM3U8Modal" title="Add M3U link">
+                data-bs-target="#addM3U8Modal" title="{{t 'add-m3u-link-btn'}}">
                 <i class="fa fa-plus"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about" title="About This App">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-about" title="{{t 'about-btn'}}">
                 <i class="fa fa-info"></i>
             </button>
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="settings" title="{{t 'settings-btn'}}"
@@ -85,7 +85,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="m3u8link" value="" placeholder="" required />
+                    <label>{{t 'm3u-name'}}</label>
+                    <input type="text" class="form-control" id="m3u8name" value="" placeholder="Example" required />
+                    <label class="mt-2">{{t 'm3u-link'}}</label>
+                    <input type="text" class="form-control" id="m3u8link" value="" placeholder="https://example.com/index.m3u" required />
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>

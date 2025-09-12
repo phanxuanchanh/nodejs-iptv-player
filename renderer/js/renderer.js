@@ -5,7 +5,7 @@ btnAllChannelsEl.addEventListener('click', function (e) {
     gotoAllChannelsPromise.then().catch();
 });
 
-const aboutEl = document.getElementById('about');
+const aboutEl = document.getElementById('btn-about');
 
 aboutEl.addEventListener('click', function (e) {
     const gotoAboutPromise = window.api.gotoAbout();
@@ -14,10 +14,12 @@ aboutEl.addEventListener('click', function (e) {
 
 const btnM3u8Submit = document.getElementById('btnM3u8Submit');
 const m3u8Link = document.getElementById('m3u8link');
+const m3u8Name = document.getElementById('m3u8name');
 
 btnM3u8Submit.addEventListener('click', function (e) {
     const url = m3u8Link.value;
-    const addM3U8Promise = window.api.addM3U8(url);
+    const name = m3u8Name.value;
+    const addM3U8Promise = window.api.addM3U8(name, url);
 
     addM3U8Promise
         .then(() => { })
@@ -53,6 +55,21 @@ function getPagination(page, pageSize) {
         alert('Lỗi');
     });
 }
+
+const mainSearchEl = document.getElementById('mainSearch');
+
+mainSearchEl.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter')
+        return;
+
+    const keyword = e.target.value;
+
+    window.api.loadList(keyword, 1, 24)
+        .then(result => {
+            console.log('Search input:', keyword, result);
+        })
+        .catch(err => console.error(err));
+})
 
 //=============================================================
 /**

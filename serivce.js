@@ -7,6 +7,14 @@ class Service {
         return await SqliteExecution.getMany(query);
     }
 
+    /**
+     * 
+     * @param {int} listId 
+     * @param {string} search 
+     * @param {int} page 
+     * @param {int} pageSize 
+     * @returns {Promise<{page: int, pageSize: int, items: []}>}
+     */
     static async loadChannels(listId, search = null, page = 1, pageSize = 24) {
         let paginatedData = null;
         if (search) {
@@ -20,6 +28,11 @@ class Service {
         return paginatedData;
     }
 
+    /**
+     * 
+     * @param {int} id 
+     * @returns 
+     */
     static async getChannel(id) {
         if (id === undefined || id == null || id == 0)
             throw new Error('Invalid channel ID');
@@ -30,12 +43,17 @@ class Service {
         return item;
     }
 
-    static async addPlaylist(url) {
+    /**
+     * 
+     * @param {string} name 
+     * @param {string} url 
+     */
+    static async addPlaylist(name, url) {
         try {
             SqliteExecution.db.run('BEGIN TRANSACTION');
 
-            const addListTableQuery = 'INSERT INTO all_lists (urlOrFileName) VALUES (?)'
-            const itemData = [url];
+            const addListTableQuery = 'INSERT INTO all_lists (name, urlOrFileName) VALUES (?, ?)'
+            const itemData = [name, url];
             const res = await SqliteExecution.insert(addListTableQuery, itemData);
 
             console.log(res.lastID);

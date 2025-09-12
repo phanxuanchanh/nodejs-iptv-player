@@ -1,6 +1,12 @@
 {
     "favorite-list-btn": "Favorite List",
     "settings-btn": "Settings",
+    "main-search-input-placeholder": "Search",
+    "add-m3u-link-btn": "Add M3U link",
+    "about-btn": "About This App",
     "setting-modal-title": "Settings",
-    "select-language": "Select language:"
+    "select-language": "Select language:",
+
+    "m3u-name": "M3U Name",
+    "m3u-link": "M3U link"
 }

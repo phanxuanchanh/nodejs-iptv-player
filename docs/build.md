@@ -19,3 +19,9 @@ npm install
 ```
 npm start
 ```
+
+## 3. Build ra phiên bản Production
+
+```
+npm run build
+```
