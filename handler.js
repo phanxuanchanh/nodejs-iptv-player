@@ -1,8 +1,7 @@
-const { BrowserWindow } = require("electron");
 const Service = require("./serivce.js");
 const PageRender = require("./shared/page-render");
 const FileManager = require("./shared/file.js");
-const i18next = require('i18next');
+const path = require("path");
 
 /**
  * 
@@ -10,12 +9,14 @@ const i18next = require('i18next');
 class Handler {
     /**
      * 
+     * @param {{appPath: string, tempPath: string}} paths
      * @param {Window} window 
      * @param {PageRender} pageRender
      * @param {FileManager} fileManager
      * @param {[]} playlists 
      */
-    constructor(window, pageRender, fileManager, playlists) {
+    constructor(paths, window, pageRender, fileManager, playlists) {
+        this.paths = paths;
         this.window = window;
         this.pageRender = pageRender;
         this.fileManager = fileManager;
@@ -24,13 +25,14 @@ class Handler {
 
     /**
      * 
+     * @param {{appPath: string, tempPath: string}} paths
      * @param {Window} window 
      * @param {PageRender} pageRender 
      * @param {FileManager} fileManager 
      * @returns {Handler}
      */
-    static Init(window, pageRender, fileManager) {
-        const handler = new Handler(window, pageRender, fileManager, []);
+    static Init(paths, window, pageRender, fileManager) {
+        const handler = new Handler(paths, window, pageRender, fileManager, []);
 
         Service.loadPlaylists().then((rows) => {
             handler.playlists = rows
@@ -71,19 +73,36 @@ class Handler {
         const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
         const html = this.pageRender.renderPage('play', {
             layout: 'layout',
-            paginatedData: paged, 
-            item: channel, 
-            search, 
+            paginatedData: paged,
+            item: channel,
+            search,
             playlists: this.playlists,
             selectedPlaylistId: selectedListId,
             enableBackBtn: true
         });
-        await this.window.load(html);
+
+        const videoJsCssPath = path.join(this.paths.tempPath, 'video-js', 'video-js.min.css')
+            .replace(/\\/g, '/');
+        const videoJsJsPath = path.join(this.paths.tempPath, 'video-js', 'video.min.js')
+            .replace(/\\/g, '/');
+        const videoJsHttpStreamingJsPath = path.join(this.paths.tempPath, 'videojs-http-streaming', 'videojs-http-streaming.min.js')
+            .replace(/\\/g, '/');
+        const videoJsQualitySelectorJsPath = path.join(this.paths.tempPath, 'videojs-hls-quality-selector', 'videojs-hls-quality-selector.min.js')
+            .replace(/\\/g, '/');
+        const playJs = this.fileManager.getFileContent('/renderer/js/', 'play.js');
+        const tempLoaderJs = this.fileManager.getFileContent('/renderer/js/', 'temp-loader.js')
+            .replace('<<VIDEOJS-CSSPATH>>', videoJsCssPath)
+            .replace('<<VIDEOJS-JSPATH>>', videoJsJsPath)
+            .replace('<<VIDEOJS-HTTP-STREAMING-JSPATH>>', videoJsHttpStreamingJsPath)
+            .replace('<<VIDEOJS-QUALITY-SELECTOR-JSPATH>>', videoJsQualitySelectorJsPath)
+            .replace('<<PLAY-JSCONTENT>>', playJs);
+
+        await this.window.load(html, { type: 'js', data: tempLoaderJs });
     }
 
     async loadAbout() {
-        const html = this.pageRender.renderPage('about', { 
-            layout: 'layout', 
+        const html = this.pageRender.renderPage('about', {
+            layout: 'layout',
             playlists: this.playlists,
             enableBackBtn: false
         });

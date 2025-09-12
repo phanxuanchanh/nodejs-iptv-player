@@ -14,7 +14,7 @@ const Backend = require('i18next-fs-backend');
 const appPath = app.getAppPath();
 const tempPath = path.join(os.tmpdir(), app.getName());
 const pageRender = new PageRender(appPath);
-const window = new Window(appPath);
+const window = new Window(appPath, tempPath);
 const fileManager = new FileManager(appPath);
 const store = new Store();
 
@@ -43,7 +43,23 @@ SqliteExecution.openDatabase(`${tempPath}\\app.db`)
         console.debug(err);
     });
 
-const handler = Handler.Init(window, pageRender, fileManager);
+const fontAwesomePath = path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free');
+const fontAwesomeTempPath = path.join(tempPath, 'fontawesome-free');
+FileManager.copyDir(fontAwesomePath, fontAwesomeTempPath);
+
+const videoJsPath = path.join(__dirname, 'node_modules/video.js/dist');
+const videoJsTempPath = path.join(tempPath, 'video-js');
+FileManager.copyDir(videoJsPath, videoJsTempPath);
+
+const videoJsHttpStreamingPath = path.join(__dirname, 'node_modules/@videojs/http-streaming/dist');
+const videoJsHttpStreamingTempPath = path.join(tempPath, 'videojs-http-streaming');
+FileManager.copyDir(videoJsHttpStreamingPath, videoJsHttpStreamingTempPath);
+
+const videoJsQualitySelectorPath = path.join(__dirname, 'node_modules/videojs-hls-quality-selector/dist');
+const videoJsQualitySelectorTempPath = path.join(tempPath, 'videojs-hls-quality-selector');
+FileManager.copyDir(videoJsQualitySelectorPath, videoJsQualitySelectorTempPath);
+
+const handler = Handler.Init({ appPath: appPath, tempPath: tempPath } ,window, pageRender, fileManager);
 const selectedListId = store.get('list.selected');
 
 setTimeout(async () => {
@@ -89,17 +105,32 @@ ipcMain.handle('add.m3u8.link', async (event, url) => {
 });
 
 ipcMain.handle('list.select', async (event, id) => {
-    store.set('list.selected', id);
+    try {
+        store.set('list.selected', id);
 
-    SqliteExecution.closeDatabase();
-    app.relaunch();
-    app.exit(0);
+        SqliteExecution.closeDatabase();
+        app.relaunch();
+        app.exit(0);
+    } catch (err) {
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
+    }
 });
 
 ipcMain.on('goto.about', async (event) => {
-    await handler.loadAbout();
+    try {
+        await handler.loadAbout();
+    } catch (err) {
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
+    }
 });
 
 ipcMain.on('link.open', async (event, url) => {
-    await shell.openExternal(url);
+    try {
+        await shell.openExternal(url);
+    } catch (err) {
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
+    }
 });

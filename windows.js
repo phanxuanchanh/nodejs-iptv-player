@@ -1,11 +1,19 @@
 const { BrowserWindow, dialog } = require("electron");
-const fs = require("fs");
 const path = require("path");
 const FileManager = require("./shared/file");
 
+/**
+ * 
+ */
 class Window {
-    constructor(appPath) {
+    /**
+     * 
+     * @param {string} appPath 
+     * @param {string} tempPath 
+     */
+    constructor(appPath, tempPath) {
         this.appPath = appPath;
+        this.tempPath = tempPath;
         this.win = undefined;
         this.fileManager = new FileManager(appPath);
     }
@@ -19,22 +27,39 @@ class Window {
                 preload: path.join(__dirname, "preload.js"),
                 nodeIntegration: false,
                 contextIsolation: true,
+                webSecurity: false
             }
         });
     }
 
     async loadDefaultAssets() {
-            const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');
-            const css = this.fileManager.getFileContent('/renderer/css/', 'styles.css');
-            const bootstrapjs = this.fileManager.getFileContent('/renderer/js/', 'bootstrap.bundle.min.js');
-            const rendererJs = this.fileManager.getFileContent('/renderer/js/', 'renderer.js');
+        const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');
+        const css = this.fileManager.getFileContent('/renderer/css/', 'styles.css');
+        const bootstrapjs = this.fileManager.getFileContent('/renderer/js/', 'bootstrap.bundle.min.js');
+        const rendererJs = this.fileManager.getFileContent('/renderer/js/', 'renderer.js');
 
-            await this.win.webContents.insertCSS(bootstrapcss);
-            await this.win.webContents.insertCSS(css);
-            await this.win.webContents.executeJavaScript(bootstrapjs);
-            await this.win.webContents.executeJavaScript(rendererJs);
+        await this.win.webContents.insertCSS(bootstrapcss);
+        await this.win.webContents.insertCSS(css);
+        await this.win.webContents.executeJavaScript(bootstrapjs);
+        await this.win.webContents.executeJavaScript(rendererJs);
+
+        const fontAwesomePath = path.join(this.tempPath, 'fontawesome-free', 'css', 'all.min.css')
+            .replace(/\\/g, '/');
+        const linkFontAwesomeJs = `
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = "file://${fontAwesomePath}";
+            document.head.appendChild(link);
+            `;
+
+        await this.win.webContents.executeJavaScript(linkFontAwesomeJs);
     }
 
+    /**
+     * 
+     * @param {*} html 
+     * @param  {...{type: string, data: any}} assetContents 
+     */
     async load(html, ...assetContents) {
         await this.win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
         await this.loadDefaultAssets();
@@ -48,6 +73,13 @@ class Window {
         await this.win.webContents.executeJavaScript('document.documentElement.style.visibility = "visible"');
     }
 
+    /**
+     * 
+     * @param {string} type 
+     * @param {string} title 
+     * @param {string} message 
+     * @param {string[]} buttons 
+     */
     async showMsgBox(type, title, message, buttons) {
         await dialog.showMessageBox(this.win, {
             type: type,

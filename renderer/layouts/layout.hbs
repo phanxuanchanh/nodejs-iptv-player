@@ -2,7 +2,6 @@
 
 <head>
     <title>IPTV Player</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         html {
             visibility: hidden;
@@ -15,22 +14,22 @@
         {{#ifCond enableBackBtn '===' true}}
         <!-- Back -->
         <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-back" title="Go back">
-            <i class="fa fa-lg fa-arrow-left"></i>
+            <i class="fa fa-arrow-left"></i>
         </button>
         {{/ifCond}}
 
         <!-- Các chức năng chính -->
         <div class="d-flex flex-wrap align-items-center">
             <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="{{t 'favorite-list-btn'}}">
-                <i class="fa fa-lg fa-heart"></i>
+                <i class="fa fa-heart"></i>
             </button>
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="All channels">
-                <i class="fa fa-lg fa-tv"></i>
+                <i class="fa fa-tv"></i>
             </button>
             <div class="dropdown">
                 <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories" data-bs-toggle="dropdown"
                     aria-expanded="false" title="Categories">
-                    <i class="fa fa-lg fa-list"></i>
+                    <i class="fa fa-list"></i>
                 </button>
                 <ul class="dropdown-menu bg-dark" aria-labelledby="btn-categories">
                     <li><a class="dropdown-item text-white" href="#">Item 1</a></li>
@@ -61,14 +60,14 @@
 
             <button class="btn btn-sm me-2 p-2 text-white btn-func" data-bs-toggle="modal"
                 data-bs-target="#addM3U8Modal" title="Add M3U link">
-                <i class="fa fa-lg fa-plus"></i>
+                <i class="fa fa-plus"></i>
             </button>
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="about" title="About This App">
-                <i class="fa fa-lg fa-info"></i>
+                <i class="fa fa-info"></i>
             </button>
             <button class="btn btn-sm me-2 p-2 text-white btn-func" id="settings" title="{{t 'settings-btn'}}"
                 data-bs-toggle="modal" data-bs-target="#settingsModal" title="Add M3U link">
-                <i class="fas fa-lg fa-ellipsis-v"></i>
+                <i class="fas g fa-ellipsis-v"></i>
             </button>
         </div>
     </nav>

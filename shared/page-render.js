@@ -3,7 +3,14 @@ const hbs = require("hbs");
 const path = require("path");
 const helpers = require('./handlebars-helper.js');
 
+/**
+ * 
+ */
 class PageRender {
+    /**
+     * 
+     * @param {string} appPath 
+     */
     constructor(appPath) {
         this.appPath = appPath;
     }
@@ -14,6 +21,12 @@ class PageRender {
         }
     }
 
+    /**
+     * 
+     * @param {string} pageName 
+     * @param {any} data 
+     * @returns {string}
+     */
     renderPage(pageName, data) {
         const layout = fs.readFileSync(path.join(this.appPath, "renderer/layouts/layout.hbs"), "utf-8");
         const page = fs.readFileSync(path.join(this.appPath, `renderer/pages/${pageName}.hbs`), "utf-8");
@@ -23,6 +36,13 @@ class PageRender {
         return compiledLayout({ ...data, body: compiledPage(data) });
     }
 
+    /**
+     * 
+     * @param {string} path 
+     * @param {string} pageName 
+     * @param {any} data 
+     * @returns {string}
+     */
     renderPageNoLayout(path, pageName, data = {}) {
         const filePath = `${this.appPath}${path}${pageName}.hbs`;
         const page = fs.readFileSync(filePath, 'utf-8')

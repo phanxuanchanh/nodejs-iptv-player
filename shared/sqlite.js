@@ -1,5 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 
+/**
+ * 
+ */
 class SqliteExecution {
     static db;
 
@@ -62,6 +65,13 @@ class SqliteExecution {
         });
     }
 
+    /**
+     * 
+     * @param {string} tableName 
+     * @param {int} page 
+     * @param {int} pageSize 
+     * @returns {Promise<{page: int, pageSize: int, items: []}>}
+     */
     static async getPaginatedData1(tableName, page = 1, pageSize = 10) {
         const offset = (page - 1) * pageSize;
         const paginatedQuery = `SELECT * FROM ${tableName} LIMIT ? OFFSET ?`;
@@ -81,6 +91,15 @@ class SqliteExecution {
         }
     }
 
+    /**
+     * 
+     * @param {string} tableName 
+     * @param {string} where 
+     * @param {[]} whereParams 
+     * @param {int} page 
+     * @param {int} pageSize 
+     * @returns {Promise<{page: int, pageSize: int, items: []}>}
+     */
     static async getPaginatedData2(tableName, where, whereParams, page = 1, pageSize = 10) {
         const offset = (page - 1) * pageSize;
         const paginatedQuery = `SELECT * FROM ${tableName} WHERE ${where} LIMIT ? OFFSET ?`;
@@ -100,6 +119,12 @@ class SqliteExecution {
         }
     }
 
+    /**
+     * 
+     * @param {string} query 
+     * @param {[]} params 
+     * @returns {Promise<{ lastID: any, changes: any }>}
+     */
     static async insert(query, params = []) {
         return new Promise((resolve, reject) => {
             SqliteExecution.db.run(query, params, function (err) {
