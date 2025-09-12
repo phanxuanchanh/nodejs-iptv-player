@@ -70,6 +70,7 @@ class Window {
             else
                 await this.win.webContents.insertCSS(content.data);
         }
+        
         await this.win.webContents.executeJavaScript('document.documentElement.style.visibility = "visible"');
     }
 

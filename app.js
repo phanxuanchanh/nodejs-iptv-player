@@ -31,7 +31,7 @@ i18next.use(Backend).init({
 
 SqliteExecution.openDatabase(`${tempPath}\\app.db`)
     .then(() => {
-        const sql = fileManager.getFileContent('/', 'app.sql');
+        const sql = fileManager.getFileContent('/sql/', 'app.sql');
         SqliteExecution.db.exec(sql, (err) => {
             if (err)
                 console.debug(err);
