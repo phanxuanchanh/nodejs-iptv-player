@@ -4,6 +4,9 @@ const sqlite3 = require('sqlite3').verbose();
  * 
  */
 class SqliteExecution {
+    /**
+     * @type {Database}
+     */
     static db;
 
     /**
@@ -20,6 +23,10 @@ class SqliteExecution {
         });
     }
 
+    /**
+     * 
+     * @returns {Promise<void>}
+     */
     static async closeDatabase() {
         return new Promise((resolve, reject) => {
             SqliteExecution.db.close(err => {

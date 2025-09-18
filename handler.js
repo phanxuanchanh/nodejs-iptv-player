@@ -13,14 +13,16 @@ class Handler {
      * @param {Window} window 
      * @param {PageRender} pageRender
      * @param {FileManager} fileManager
-     * @param {[]} playlists 
+     * @param {{id: int, name: string, urlOrFileName: string, createdAt: Date}[]} playlists
+     * @param {{ categoryName: string}[]} categories
      */
-    constructor(paths, window, pageRender, fileManager, playlists) {
+    constructor(paths, window, pageRender, fileManager, playlists, categories) {
         this.paths = paths;
         this.window = window;
         this.pageRender = pageRender;
         this.fileManager = fileManager;
         this.playlists = playlists;
+        this.categories = categories;
     }
 
     /**
@@ -33,10 +35,11 @@ class Handler {
      */
     static Init(paths, window, pageRender, fileManager) {
         const handler = new Handler(paths, window, pageRender, fileManager, []);
-
-        Service.loadPlaylists().then((rows) => {
-            handler.playlists = rows
-        }).catch((err) => { throw err; });
+        Promise.all([Service.loadPlaylists(), Service.loadCategories()])
+            .then((res) => {
+                handler.playlists = res[0];
+                handler.categories = res[1];
+            }).catch((err) => { throw err; });
 
         return handler;
     }
@@ -54,6 +57,7 @@ class Handler {
             layout: 'layout',
             paginatedData: paged,
             playlists: this.playlists,
+            categories: this.categories,
             selectedPlaylistId: selectedListId,
             enableBackBtn: false
         });
@@ -77,6 +81,7 @@ class Handler {
             item: channel,
             search,
             playlists: this.playlists,
+            categories: this.categories,
             selectedPlaylistId: selectedListId,
             enableBackBtn: true
         });
@@ -104,6 +109,7 @@ class Handler {
         const html = this.pageRender.renderPage('about', {
             layout: 'layout',
             playlists: this.playlists,
+            categories: this.categories,
             enableBackBtn: false
         });
         await this.window.load(html);

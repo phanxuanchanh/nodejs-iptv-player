@@ -3,6 +3,11 @@ const m3u8Parser = require('m3u8-parser');
 
 module.exports = { getChannelsFromM3U8 };
 
+/**
+ * 
+ * @param {string} line 
+ * @returns {{tvg_id: string, tvg_logo: string, group_title: string}}
+ */
 function parseExtinf(line) {
     const regex = /-1\s+tvg-id="([^"]*)"\s+tvg-logo="([^"]*)"\s+group-title="([^"]*)",(.+)/;
     const matches = line.match(regex);
@@ -18,6 +23,11 @@ function parseExtinf(line) {
     }
 }
 
+/**
+ * 
+ * @param {string} url 
+ * @returns {Promise<{name: string, logo: string, group: string, url: string}[]>} 
+ */
 async function getChannelsFromM3U8(url) {
     const response = await axios.get(url);
     const m3u8Data = response.data;

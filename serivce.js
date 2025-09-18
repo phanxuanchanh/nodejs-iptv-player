@@ -1,7 +1,14 @@
 const { getChannelsFromM3U8 } = require('./shared/m3u8-list-handler.js');
 const SqliteExecution = require('./shared/sqlite.js');
 
+/**
+ * 
+ */
 class Service {
+    /**
+     * 
+     * @returns {Promise<{id: int, name: string, urlOrFileName: string, createdAt: Date}[]>}
+     */
     static async loadPlaylists() {
         const query = 'SELECT * FROM all_lists';
         return await SqliteExecution.getMany(query);
@@ -13,7 +20,7 @@ class Service {
      * @param {string} search 
      * @param {int} page 
      * @param {int} pageSize 
-     * @returns {Promise<{page: int, pageSize: int, items: []}>}
+     * @returns {Promise<{page: int, pageSize: int, items: {id: int, name: string, logo: string, group: string, url: string, list_id: int}[]}>}
      */
     static async loadChannels(listId, search = null, page = 1, pageSize = 24) {
         let paginatedData = null;
@@ -31,7 +38,7 @@ class Service {
     /**
      * 
      * @param {int} id 
-     * @returns 
+     * @returns {{id: int, name: string, logo: string, group: string, url: string, list_id: int}}
      */
     static async getChannel(id) {
         if (id === undefined || id == null || id == 0)
@@ -73,6 +80,15 @@ class Service {
             SqliteExecution.db.run('ROLLBACK');
             throw e;
         }
+    }
+
+    /**
+     * 
+     * @returns {Promise<{categoryName: string}[]>}
+     */
+    static async loadCategories(){
+        const query = 'SELECT DISTINCT "group"  as categoryName FROM all_channels';
+        return await SqliteExecution.getMany(query);
     }
 }
 

@@ -31,10 +31,10 @@
                     aria-expanded="false" title="Categories">
                     <i class="fa fa-list"></i>
                 </button>
-                <ul class="dropdown-menu bg-dark" aria-labelledby="btn-categories">
-                    <li><a class="dropdown-item text-white" href="#">Item 1</a></li>
-                    <li><a class="dropdown-item text-white" href="#">Item 2</a></li>
-                    <li><a class="dropdown-item text-white" href="#">Item 3</a></li>
+                <ul class="dropdown-menu bg-dark categories-dropdown-menu" aria-labelledby="btn-categories">
+                    {{#each categories}}
+                    <li><a class="dropdown-item text-white" href="#">{{this.categoryName}}</a></li>
+                    {{/each}}
                 </ul>
             </div>
         </div>

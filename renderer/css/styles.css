@@ -3,18 +3,6 @@ body {
     color: white;
 }
 
-.navbar {
-    background-color: #1976d2;
-}
-
-.nav-link {
-    color: white !important;
-}
-
-.nav-link.active {
-    border-bottom: 2px solid white;
-}
-
 .channel-card {
     background-color: #424242;
     color: white;
@@ -67,6 +55,7 @@ body {
 
 .channel-list {
     max-height: 100%;
+    padding-left: 16px;
 }
 
 .video-player {
@@ -82,3 +71,62 @@ body {
     background-color: #0d0e0d;
     color: #fff;
   }
+
+
+.categories-dropdown-menu {
+  max-height: calc(5 * 40px);
+  overflow-y: auto;
+  scrollbar-width: thin;        /* thanh cuộn mảnh */
+  scrollbar-color: #888 #f1f1f1; /* màu thumb và track */
+}
+
+.categories-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Nền của scrollbar */
+.categories-dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Phần thanh cuộn */
+.categories-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Hover vào thanh cuộn */
+.categories-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+/**
+* ===========================================================================
+* PLAY
+**/
+
+.channel-items {
+  overflow-y: auto;
+  scrollbar-width:thin;
+  scrollbar-color: #424242 #1B1E21;
+}
+
+.channel-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.channel-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.channel-items::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.channel-items::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
