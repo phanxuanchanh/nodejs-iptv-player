@@ -22,8 +22,11 @@ pageRender.setHelpers();
 app.whenReady().then(() => { window.init(); });
 FileManager.createDir(tempPath);
 
+const selectedLanguage = store.get('language.selected');
+
 i18next.use(Backend).init({
-    lng: 'en', //app.getLocale(), // hoặc 'en', 'vi', ...
+    //app.getLocale(), // hoặc 'en', 'vi', ...
+    lng: (selectedLanguage === undefined || selectedLanguage == null) ? 'en' : selectedLanguage,
     backend: {
         loadPath: path.join(__dirname, 'locales/{{lng}}.json')
     }
@@ -59,7 +62,7 @@ const videoJsQualitySelectorPath = path.join(__dirname, 'node_modules/videojs-hl
 const videoJsQualitySelectorTempPath = path.join(tempPath, 'videojs-hls-quality-selector');
 FileManager.copyDir(videoJsQualitySelectorPath, videoJsQualitySelectorTempPath);
 
-const handler = Handler.Init({ appPath: appPath, tempPath: tempPath } ,window, pageRender, fileManager);
+const handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager);
 const selectedListId = store.get('list.selected');
 
 setTimeout(async () => {
@@ -129,6 +132,20 @@ ipcMain.on('goto.about', async (event) => {
 ipcMain.on('link.open', async (event, url) => {
     try {
         await shell.openExternal(url);
+    } catch (err) {
+        console.debug(err.message);
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
+    }
+});
+
+ipcMain.on('settings.submit', async (event, lang) => {
+    try {
+        store.set('language.selected', lang);
+
+        SqliteExecution.closeDatabase();
+
+        app.relaunch();
+        app.exit(0);
     } catch (err) {
         console.debug(err.message);
         await window.showMsgBox('info', 'Error', err.message, ['OK'])

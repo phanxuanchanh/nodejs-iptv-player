@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld("api", {
   getChannel: (id, search, page, pageSize) => ipcRenderer.send("channel.get", id, search, page, pageSize),
   addM3U8: (name, url) => ipcRenderer.invoke('add.m3u8.link', name, url),
   gotoAbout: () => ipcRenderer.send('goto.about'),
-  openLink: (url) => ipcRenderer.send('link.open', url)
+  openLink: (url) => ipcRenderer.send('link.open', url),
+  submitSettings: (lang) => ipcRenderer.send('settings.submit', lang)
 });

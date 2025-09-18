@@ -5,6 +5,7 @@
     <style>
         html {
             visibility: hidden;
+            scrollbar-width: none;
         }
     </style>
 </head>
@@ -28,7 +29,7 @@
             </button>
             <div class="dropdown">
                 <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories" data-bs-toggle="dropdown"
-                    aria-expanded="false" title="Categories">
+                    aria-expanded="false" title="{{t 'categories-btn'}}">
                     <i class="fa fa-list"></i>
                 </button>
                 <ul class="dropdown-menu bg-dark categories-dropdown-menu" aria-labelledby="btn-categories">
@@ -108,13 +109,13 @@
                 </div>
                 <div class="modal-body">
                     <label>{{t 'select-language'}}</label>
-                    <select>
-                        <option>English</option>
-                        <option>Tiếng Việt</option>
+                    <select id="selectLanguage">
+                        <option value="en">English</option>
+                        <option value="vi">Tiếng Việt</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
+                    <button type="button" id="btnSettingsSubmit" class="btn btn-sm btn-success">Submit</button>
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

@@ -1,11 +1,10 @@
 const btnAllChannelsEl = document.getElementById('btn-all-channels');
+const aboutEl = document.getElementById('btn-about');
 
 btnAllChannelsEl.addEventListener('click', function (e) {
     const gotoAllChannelsPromise = window.api.loadList(null, 1, 24);
     gotoAllChannelsPromise.then().catch();
 });
-
-const aboutEl = document.getElementById('btn-about');
 
 aboutEl.addEventListener('click', function (e) {
     const gotoAboutPromise = window.api.gotoAbout();
@@ -69,7 +68,15 @@ mainSearchEl.addEventListener('keydown', function (e) {
             console.log('Search input:', keyword, result);
         })
         .catch(err => console.error(err));
-})
+});
+
+const btnSettingsSubmitEl = document.getElementById('btnSettingsSubmit');
+
+btnSettingsSubmitEl.addEventListener('click', function (e) {
+    const selectedLanguage = document.getElementById('selectLanguage').value;
+    const submitSettingsPromise = window.api.submitSettings(selectedLanguage);
+    submitSettingsPromise.then().catch();
+});
 
 //=============================================================
 /**
