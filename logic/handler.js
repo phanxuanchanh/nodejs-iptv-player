@@ -113,6 +113,20 @@ class Handler {
 
     /**
      * 
+     * @param {int} id
+     * @param {boolean} isFavorite
+     * @returns {Promise<{status: string, message: string}>}
+     */
+    async setFavoriteChannel(id, isFavorite) {
+        if (id === undefined || id == null || id == 0)
+            return { status: 'invalid', message: 'Invalid channel ID'};
+
+        await Service.setFavoriteChannel(id, isFavorite);
+        return { status: 'success', message: '' };
+    }
+
+    /**
+     * 
      */
     async loadAbout() {
         const html = this.pageRender.renderPage('about', {

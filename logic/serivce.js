@@ -23,14 +23,17 @@ class Service {
      * @returns {Promise<{page: int, pageSize: int, items: {id: int, name: string, logo: string, group: string, url: string, list_id: int}[]}>}
      */
     static async loadChannels(listId, search = null, page = 1, pageSize = 24) {
-        let paginatedData = null;
+        let where = null;
+        let whereParams = null;
         if (search) {
-            const where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
-            const whereParams = [`%${search}%`, `%${search}%`, listId];
-            paginatedData = await SqliteExecution.getPaginatedData2('all_channels', where, whereParams, page || 1, pageSize || 16);
+            where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
+            whereParams = [`%${search}%`, `%${search}%`, listId];
         } else {
-            paginatedData = await SqliteExecution.getPaginatedData1('all_channels', page || 1, pageSize || 16);
+            where = 'list_id = ?';
+            whereParams = [listId];
         }
+
+        let paginatedData = await SqliteExecution.getPaginatedData2('all_channels', where, whereParams, page || 1, pageSize || 16);
 
         return paginatedData;
     }
@@ -52,12 +55,22 @@ class Service {
 
     /**
      * 
+     * @param {int} id 
+     * @param {boolean} isFavorite 
+     */
+    static async setFavoriteChannel(id, isFavorite) {
+        const query = 'UPDATE all_channels SET favorited = ? WHERE id = ?';
+        await SqliteExecution.run(query, [isFavorite ? 1 : 0, id]);
+    }
+
+    /**
+     * 
      * @param {string} name 
      * @param {string} url 
      */
     static async addPlaylist(name, url) {
         try {
-            SqliteExecution.db.run('BEGIN TRANSACTION');
+            await SqliteExecution.run('BEGIN TRANSACTION');
 
             const addListTableQuery = 'INSERT INTO all_lists (name, urlOrFileName) VALUES (?, ?)'
             const itemData = [name, url];
@@ -71,13 +84,12 @@ class Service {
 
             channels.forEach(channel => {
                 channelItems.push([channel.name, channel.logo, channel.group, channel.url, res.lastID]);
-            })
+            });
 
-            const qres = await SqliteExecution.bulkInsert(addChannelsQuery, channelItems);
-
-            SqliteExecution.db.run('COMMIT');
+            await SqliteExecution.bulkInsert(addChannelsQuery, channelItems, { useTransaction: false });
+            await SqliteExecution.run('COMMIT');
         } catch (e) {
-            SqliteExecution.db.run('ROLLBACK');
+            await SqliteExecution.run('ROLLBACK');
             throw e;
         }
     }
@@ -86,7 +98,7 @@ class Service {
      * 
      * @returns {Promise<{categoryName: string}[]>}
      */
-    static async loadCategories(){
+    static async loadCategories() {
         const query = 'SELECT DISTINCT "group"  as categoryName FROM all_channels';
         return await SqliteExecution.getMany(query);
     }

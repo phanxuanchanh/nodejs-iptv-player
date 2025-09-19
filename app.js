@@ -35,7 +35,7 @@ i18next.use(Backend).init({
     }
 });
 
-SqliteExecution.openDatabase(`${tempPath}\\app.db`)
+SqliteExecution.open(`${tempPath}\\app.db`)
     .then(() => {
         const sql = fileManager.getFileContent('/sql/', 'app.sql');
         SqliteExecution.db.exec(sql, (err) => {
@@ -90,13 +90,17 @@ SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {
     await handler.loadChannel(selectedListId, id, search, page, pageSize);
 });
 
+SafeIpc.handle('channel.addfavorite', async (event, id) => {
+    return await handler.setFavoriteChannel(id, isFavorite = true);
+});
+
 ipcMain.handle('add.m3u8.link', async (event, name, url) => {
     if (url === null || url === undefined || url === '')
         window.showMsgBox('info', 'Invalid data', 'URL cannot be null, empty, or undefined', ['OK'])
 
     await Service.addPlaylist(name, url);
 
-    SqliteExecution.closeDatabase();
+    SqliteExecution.close();
     app.relaunch();
     app.exit(0);
 });
@@ -104,7 +108,7 @@ ipcMain.handle('add.m3u8.link', async (event, name, url) => {
 SafeIpc.on('list.select', async (event, id) => {
     store.set('list.selected', id);
 
-    SqliteExecution.closeDatabase();
+    SqliteExecution.close();
     app.relaunch();
     app.exit(0);
 });
@@ -120,7 +124,7 @@ SafeIpc.on('link.open', async (event, url) => {
 SafeIpc.on('settings.submit', async (event, lang) => {
     store.set('language.selected', lang);
 
-    SqliteExecution.closeDatabase();
+    SqliteExecution.close();
 
     app.relaunch();
     app.exit(0);

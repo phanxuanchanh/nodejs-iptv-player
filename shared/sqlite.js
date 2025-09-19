@@ -5,29 +5,30 @@ const sqlite3 = require('sqlite3').verbose();
  */
 class SqliteExecution {
     /**
-     * @type {Database}
+     * @type {sqlite3.Database}
      */
     static db;
 
     /**
-     * 
+     * Open database connection
      * @param {string} path 
      */
-    static async openDatabase(path) {
-        SqliteExecution.db = new sqlite3.Database(path, (err) => {
-            if (err) {
-                console.log('Lỗi khi mở kết nối cơ sở dữ liệu:', err.message);
-            } else {
-                console.log('Database connected');
-            }
+    static open(path) {
+        return new Promise((resolve, reject) => {
+            SqliteExecution.db = new sqlite3.Database(path, (err) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve();
+            });
         });
     }
 
     /**
-     * 
+     * Close database connection
      * @returns {Promise<void>}
      */
-    static async closeDatabase() {
+    static close() {
         return new Promise((resolve, reject) => {
             SqliteExecution.db.close(err => {
                 if (err)
@@ -39,13 +40,39 @@ class SqliteExecution {
     }
 
     /**
-     * 
+     * Run a statement (INSERT/UPDATE/DELETE/DDL)
+     * @param {string} sql 
+     * @param {any[]} params 
+     * @returns {Promise<{ lastID?: any, changes?: any }> | Promise<void> }
+     */
+    static run(sql, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, params, function (err) {
+                if (err)
+                    return reject(err);
+
+                if(this.lastID && this.lastID > 0 && this.changes && this.changes > 0)
+                    return resolve({ lastID: this.lastID, changes: this.changes });
+
+                if (this.lastID && this.lastID > 0)
+                    return resolve({ lastID: this.lastID });
+
+                if (this.changes && this.changes > 0)
+                    return resolve({ changes: this.changes });
+
+                return resolve();
+            });
+        });
+    }
+
+    /**
+     * Get a single row
      * @param {string} query 
      * @param {any[]} params 
      * @returns {Promise<any>}
      */
-    static async get(query, params = []) {
-        return await new Promise((resolve, reject) => {
+    static get(query, params = []) {
+        return new Promise((resolve, reject) => {
             SqliteExecution.db.get(query, params, (err, row) => {
                 if (err)
                     reject(err);
@@ -56,13 +83,13 @@ class SqliteExecution {
     }
 
     /**
-     * 
+     * Get all rows
      * @param {string} query 
      * @param {any[]} params 
      * @returns {Promise<any[]>}
      */
-    static async getMany(query, params = []) {
-        return await new Promise((resolve, reject) => {
+    static getMany(query, params = []) {
+        return new Promise((resolve, reject) => {
             SqliteExecution.db.all(query, params, (err, rows) => {
                 if (err)
                     reject(err);
@@ -132,7 +159,7 @@ class SqliteExecution {
      * @param {[]} params 
      * @returns {Promise<{ lastID: any, changes: any }>}
      */
-    static async insert(query, params = []) {
+    static insert(query, params = []) {
         return new Promise((resolve, reject) => {
             SqliteExecution.db.run(query, params, function (err) {
                 if (err)
@@ -149,15 +176,19 @@ class SqliteExecution {
      * @param {any[]} data 
      * @returns {Promise<{rows: number}>}
      */
-    static async bulkInsert(query, data) {
+    static bulkInsert(query, data, { useTransaction = true } = {}) {
         return new Promise((resolve, reject) => {
-            SqliteExecution.db.run("BEGIN TRANSACTION");
+            if(useTransaction)
+                SqliteExecution.db.run("BEGIN TRANSACTION");
+
             const stmt = SqliteExecution.db.prepare(query);
 
             data.forEach(row => {
                 stmt.run(row, err => {
                     if (err) {
-                        SqliteExecution.db.run("ROLLBACK");
+                        if(useTransaction)
+                            SqliteExecution.db.run("ROLLBACK");
+
                         reject(err);
                     }
                 });
@@ -165,13 +196,19 @@ class SqliteExecution {
 
             stmt.finalize(err => {
                 if (err) {
-                    SqliteExecution.db.run("ROLLBACK");
+                    if(useTransaction)
+                        SqliteExecution.db.run("ROLLBACK");
+
                     return reject(err);
                 }
-                SqliteExecution.db.run("COMMIT", err2 => {
-                    if (err2) reject(err2);
-                    else resolve({ rows: data.length });
-                });
+                if(useTransaction) {
+                    SqliteExecution.db.run("COMMIT", err2 => {
+                        if (err2) reject(err2);
+                        else resolve({ rows: data.length });
+                    });
+                }else {
+                    resolve({ rows: data.length });
+                }
             });
         });
     }

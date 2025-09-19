@@ -10,5 +10,7 @@
     "select-language": "Chọn ngôn ngữ:",
 
     "m3u-name": "Tên M3U",
-    "m3u-link": "Link M3U"
+    "m3u-link": "Link M3U",
+
+    "add-favorite-btn": "Thêm vào yêu thích"
 }

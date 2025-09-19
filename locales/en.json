@@ -10,5 +10,7 @@
     "select-language": "Select language:",
 
     "m3u-name": "M3U Name",
-    "m3u-link": "M3U link"
+    "m3u-link": "M3U link",
+
+    "add-favorite-btn": "Add to Favorites"
 }

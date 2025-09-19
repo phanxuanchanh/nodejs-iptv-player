@@ -71,3 +71,20 @@ player.hlsQualitySelector();
 player.on('loadedmetadata', function () {
     console.log('Video loaded');
 });
+
+const btnAddFavoriteEl = document.getElementById('btn-add-favorite');
+
+btnAddFavoriteEl.addEventListener('click', function (e) {
+    if (selectedChannelId == 0) {
+        alert('No channel selected');
+        return;
+    }
+
+    const addFavoritePromise = window.api.addFavorite(selectedChannelId);
+
+    addFavoritePromise.then(() => {
+        alert('Added to favorites');
+    }).catch((err) => {
+        alert('Error adding to favorites: ' + err.message);
+    });
+});

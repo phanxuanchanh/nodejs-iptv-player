@@ -1,10 +1,11 @@
 const btnAllChannelsEl = document.getElementById('btn-all-channels');
-const aboutEl = document.getElementById('btn-about');
 
 btnAllChannelsEl.addEventListener('click', function (e) {
     const gotoAllChannelsPromise = window.api.loadList(null, 1, 24);
     gotoAllChannelsPromise.then().catch();
 });
+
+const aboutEl = document.getElementById('btn-about');
 
 aboutEl.addEventListener('click', function (e) {
     const gotoAboutPromise = window.api.gotoAbout();
