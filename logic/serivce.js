@@ -1,5 +1,5 @@
-const { getChannelsFromM3U8 } = require('./shared/m3u8-list-handler.js');
-const SqliteExecution = require('./shared/sqlite.js');
+const { getChannelsFromM3U8 } = require('../shared/m3u8-list-handler.js');
+const SqliteExecution = require('../shared/sqlite.js');
 
 /**
  * 

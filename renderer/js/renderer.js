@@ -77,30 +77,3 @@ btnSettingsSubmitEl.addEventListener('click', function (e) {
     const submitSettingsPromise = window.api.submitSettings(selectedLanguage);
     submitSettingsPromise.then().catch();
 });
-
-//=============================================================
-/**
- * ABOUT
- */
-
-const githubLinkEl = document.getElementById('github-link');
-
-if (githubLinkEl !== undefined && githubLinkEl !== null) {
-    githubLinkEl.addEventListener('click', function (e) {
-        e.preventDefault();
-        const openGithubLinkPromise = window.api.openLink(githubLinkEl.href);
-
-        openGithubLinkPromise.then().catch();
-    })
-}
-
-const websiteLinkEl = document.getElementById('website-link');
-
-if (websiteLinkEl !== undefined && websiteLinkEl !== null) {
-    websiteLinkEl.addEventListener('click', function (e) {
-        e.preventDefault();
-        const openWebsiteLinkPromise = window.api.openLink(websiteLinkEl.href);
-
-        openWebsiteLinkPromise.then().catch();
-    });
-}

@@ -1,6 +1,6 @@
 const { BrowserWindow, dialog } = require("electron");
 const path = require("path");
-const FileManager = require("./shared/file");
+const FileManager = require("../shared/file");
 
 /**
  * 
@@ -24,7 +24,7 @@ class Window {
             height: 600,
             resizable: true,
             webPreferences: {
-                preload: path.join(__dirname, "preload.js"),
+                preload: path.join(this.appPath, "preload.js"),
                 nodeIntegration: false,
                 contextIsolation: true,
                 webSecurity: false
@@ -32,7 +32,7 @@ class Window {
         });
     }
 
-    async loadDefaultAssets() {
+    async #loadDefaultAssets() {
         const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');
         const css = this.fileManager.getFileContent('/renderer/css/', 'styles.css');
         const bootstrapjs = this.fileManager.getFileContent('/renderer/js/', 'bootstrap.bundle.min.js');
@@ -57,12 +57,12 @@ class Window {
 
     /**
      * 
-     * @param {*} html 
-     * @param  {...{type: string, data: any}} assetContents 
+     * @param {string} html 
+     * @param  {...{type: string, data: any}} assetContents
      */
     async load(html, ...assetContents) {
         await this.win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
-        await this.loadDefaultAssets();
+        await this.#loadDefaultAssets();
 
         for (const content of assetContents) {
             if (content.type === 'js')

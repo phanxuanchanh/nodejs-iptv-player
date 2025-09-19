@@ -1,13 +1,15 @@
 const { app, ipcMain, shell } = require("electron");
 const os = require("os");
 const path = require("path");
-const Window = require('./windows.js');
+const Window = require('./logic/windows.js');
 const PageRender = require('./shared/page-render.js');
 const SqliteExecution = require('./shared/sqlite.js');
 const FileManager = require('./shared/file.js');
-const Service = require("./serivce.js");
+const Service = require("./logic/serivce.js");
+const History = require('./logic/history.js');
 const Store = require('electron-store').default;
-const Handler = require('./handler.js');
+const Handler = require('./logic/handler.js');
+const SafeIpc = require('./shared/safe-ipc.js');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 
@@ -16,6 +18,7 @@ const tempPath = path.join(os.tmpdir(), app.getName());
 const pageRender = new PageRender(appPath);
 const window = new Window(appPath, tempPath);
 const fileManager = new FileManager(appPath);
+const history = new History();
 const store = new Store();
 
 pageRender.setHelpers();
@@ -62,7 +65,7 @@ const videoJsQualitySelectorPath = path.join(__dirname, 'node_modules/videojs-hl
 const videoJsQualitySelectorTempPath = path.join(tempPath, 'videojs-hls-quality-selector');
 FileManager.copyDir(videoJsQualitySelectorPath, videoJsQualitySelectorTempPath);
 
-const handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager);
+const handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager, history);
 const selectedListId = store.get('list.selected');
 
 setTimeout(async () => {
@@ -72,28 +75,19 @@ setTimeout(async () => {
         else
             await handler.loadImportAndSelectPlaylist();
     } catch (err) {
-        window.showMsgBox('info', 'Error', err.message, ['OK'])
-        console.debug(err);
+        console.debug(err.message);
+        await this.window.showMsgBox('info', 'Error', err.message, ['OK'])
     }
 }, 3000);
 
+SafeIpc.setWindow(window);
 
-ipcMain.on("list.load", async (event, search, page, pageSize) => {
-    try {
-        await handler.loadChannels(selectedListId, search, page, pageSize);
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+SafeIpc.on('list.load', async (event, search, page, pageSize) => {
+    await handler.loadChannels(selectedListId, search, page, pageSize);
 });
 
-ipcMain.on("channel.get", async (event, id, search, page, pageSize) => {
-    try {
-        await handler.loadChannel(selectedListId, id, search, page, pageSize);
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {
+    await handler.loadChannel(selectedListId, id, search, page, pageSize);
 });
 
 ipcMain.handle('add.m3u8.link', async (event, name, url) => {
@@ -107,47 +101,27 @@ ipcMain.handle('add.m3u8.link', async (event, name, url) => {
     app.exit(0);
 });
 
-ipcMain.handle('list.select', async (event, id) => {
-    try {
-        store.set('list.selected', id);
+SafeIpc.on('list.select', async (event, id) => {
+    store.set('list.selected', id);
 
-        SqliteExecution.closeDatabase();
-        app.relaunch();
-        app.exit(0);
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+    SqliteExecution.closeDatabase();
+    app.relaunch();
+    app.exit(0);
 });
 
-ipcMain.on('goto.about', async (event) => {
-    try {
-        await handler.loadAbout();
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+SafeIpc.on('goto.about', async (event) => {
+    await handler.loadAbout();
 });
 
-ipcMain.on('link.open', async (event, url) => {
-    try {
-        await shell.openExternal(url);
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+SafeIpc.on('link.open', async (event, url) => {
+    await shell.openExternal(url);
 });
 
-ipcMain.on('settings.submit', async (event, lang) => {
-    try {
-        store.set('language.selected', lang);
+SafeIpc.on('settings.submit', async (event, lang) => {
+    store.set('language.selected', lang);
 
-        SqliteExecution.closeDatabase();
+    SqliteExecution.closeDatabase();
 
-        app.relaunch();
-        app.exit(0);
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
-    }
+    app.relaunch();
+    app.exit(0);
 });

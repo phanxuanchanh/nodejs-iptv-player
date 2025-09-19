@@ -1,6 +1,8 @@
 const Service = require("./serivce.js");
-const PageRender = require("./shared/page-render");
-const FileManager = require("./shared/file.js");
+const PageRender = require("../shared/page-render.js");
+const FileManager = require("../shared/file.js");
+const History = require('./history.js');
+const Window = require('./windows.js');
 const path = require("path");
 
 /**
@@ -13,14 +15,16 @@ class Handler {
      * @param {Window} window 
      * @param {PageRender} pageRender
      * @param {FileManager} fileManager
+     * @param {History} history
      * @param {{id: int, name: string, urlOrFileName: string, createdAt: Date}[]} playlists
      * @param {{ categoryName: string}[]} categories
      */
-    constructor(paths, window, pageRender, fileManager, playlists, categories) {
+    constructor(paths, window, pageRender, fileManager, history, playlists, categories) {
         this.paths = paths;
         this.window = window;
         this.pageRender = pageRender;
         this.fileManager = fileManager;
+        this.history = history;
         this.playlists = playlists;
         this.categories = categories;
     }
@@ -31,10 +35,11 @@ class Handler {
      * @param {Window} window 
      * @param {PageRender} pageRender 
      * @param {FileManager} fileManager 
+     * @param {History} history
      * @returns {Handler}
      */
-    static Init(paths, window, pageRender, fileManager) {
-        const handler = new Handler(paths, window, pageRender, fileManager, []);
+    static Init(paths, window, pageRender, fileManager, history) {
+        const handler = new Handler(paths, window, pageRender, fileManager, history, []);
         Promise.all([Service.loadPlaylists(), Service.loadCategories()])
             .then((res) => {
                 handler.playlists = res[0];
@@ -62,6 +67,7 @@ class Handler {
             enableBackBtn: false
         });
         await this.window.load(html);
+        this.history.pushListPage(selectedListId, search, page, pageSize);
     }
 
     /**
@@ -105,6 +111,9 @@ class Handler {
         await this.window.load(html, { type: 'js', data: tempLoaderJs });
     }
 
+    /**
+     * 
+     */
     async loadAbout() {
         const html = this.pageRender.renderPage('about', {
             layout: 'layout',
@@ -112,9 +121,14 @@ class Handler {
             categories: this.categories,
             enableBackBtn: false
         });
-        await this.window.load(html);
+        const aboutJs = this.fileManager.getFileContent('/renderer/js/', 'about.js');
+
+        await this.window.load(html, { type: 'js', data: aboutJs });
     }
 
+    /**
+     * 
+     */
     async loadImportAndSelectPlaylist() {
         const importAndSelectJs = this.fileManager.getFileContent('/renderer/pages-nolayout/', 'import-select.js');
         const html = this.pageRender.renderPageNoLayout('/renderer/pages-nolayout/', 'import-select', { playlists: this.playlists });
