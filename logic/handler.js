@@ -66,7 +66,7 @@ class Handler {
             selectedPlaylistId: selectedListId,
             enableBackBtn: false
         });
-        await this.window.load(html);
+        await this.window.load(html, true);
         this.history.pushListPage(selectedListId, search, page, pageSize);
     }
 
@@ -108,7 +108,7 @@ class Handler {
             .replace('<<VIDEOJS-QUALITY-SELECTOR-JSPATH>>', videoJsQualitySelectorJsPath)
             .replace('<<PLAY-JSCONTENT>>', playJs);
 
-        await this.window.load(html, { type: 'js', data: tempLoaderJs });
+        await this.window.load(html, true, { type: 'js', data: tempLoaderJs });
     }
 
     /**
@@ -137,16 +137,25 @@ class Handler {
         });
         const aboutJs = this.fileManager.getFileContent('/renderer/js/', 'about.js');
 
-        await this.window.load(html, { type: 'js', data: aboutJs });
+        await this.window.load(html, true, { type: 'js', data: aboutJs });
     }
 
     /**
      * 
      */
     async loadImportAndSelectPlaylist() {
+        const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');
+        const bootstrapjs = this.fileManager.getFileContent('/renderer/js/', 'bootstrap.bundle.min.js');
         const importAndSelectJs = this.fileManager.getFileContent('/renderer/pages-nolayout/', 'import-select.js');
+
         const html = this.pageRender.renderPageNoLayout('/renderer/pages-nolayout/', 'import-select', { playlists: this.playlists });
-        await this.window.load(html, { type: 'js', data: importAndSelectJs });
+        const assetContents = [
+            { type: 'css', data: bootstrapcss },
+            { type: 'js', data: bootstrapjs },
+            { type: 'js', data: importAndSelectJs }
+        ];
+        
+        await this.window.load(html, false, ...assetContents);
     }
 }
 

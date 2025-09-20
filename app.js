@@ -1,4 +1,4 @@
-const { app, ipcMain, shell } = require("electron");
+const { app, shell } = require("electron");
 const os = require("os");
 const path = require("path");
 const Window = require('./logic/windows.js');
@@ -76,7 +76,7 @@ setTimeout(async () => {
             await handler.loadImportAndSelectPlaylist();
     } catch (err) {
         console.debug(err.message);
-        await this.window.showMsgBox('info', 'Error', err.message, ['OK'])
+        await window.showMsgBox('info', 'Error', err.message, ['OK'])
     }
 }, 3000);
 
@@ -94,7 +94,7 @@ SafeIpc.handle('channel.addfavorite', async (event, id) => {
     return await handler.setFavoriteChannel(id, isFavorite = true);
 });
 
-ipcMain.handle('add.m3u8.link', async (event, name, url) => {
+SafeIpc.handle('add.m3u8.link', async (event, name, url) => {
     if (url === null || url === undefined || url === '')
         window.showMsgBox('info', 'Invalid data', 'URL cannot be null, empty, or undefined', ['OK'])
 

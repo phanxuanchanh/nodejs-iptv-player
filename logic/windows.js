@@ -58,11 +58,13 @@ class Window {
     /**
      * 
      * @param {string} html 
+     * @param {boolean} loadDefaultAssets
      * @param  {...{type: string, data: any}} assetContents
      */
-    async load(html, ...assetContents) {
+    async load(html, loadDefaultAssets, ...assetContents) {
         await this.win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
-        await this.#loadDefaultAssets();
+        if(loadDefaultAssets)
+            await this.#loadDefaultAssets();
 
         for (const content of assetContents) {
             if (content.type === 'js')
