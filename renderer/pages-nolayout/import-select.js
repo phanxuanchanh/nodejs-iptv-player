@@ -1,11 +1,9 @@
-const m3u8LinkEl = document.getElementById('m3u8link');
+const btnM3u8Submit = document.getElementById('btnM3u8Submit');
 
-m3u8LinkEl.addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter')
-        return;
-
-    const url = m3u8LinkEl.value;
-    const addM3U8Promise = window.api.addM3U8(url);
+btnM3u8Submit.addEventListener('click', function (e) {
+    const m3uLink = document.getElementById('m3u8link').value;
+    const m3uName = document.getElementById('m3u8name').value;
+    const addM3U8Promise = window.api.addM3U8(m3uName, m3uLink);
 
     addM3U8Promise
         .then(() => { })
