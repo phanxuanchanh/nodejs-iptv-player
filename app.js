@@ -35,50 +35,70 @@ i18next.use(Backend).init({
     }
 });
 
+let setupDbComplete = false;
+
 SqliteExecution.open(`${tempPath}\\app.db`)
     .then(() => {
         const sql = fileManager.getFileContent('/sql/', 'app.sql');
         SqliteExecution.db.exec(sql, (err) => {
-            if (err)
+            if (err) {
                 console.debug(err);
-            else
+                window.showMsgBox('info', 'Error', `${err.message}`, ['OK']);
+                app.exit(1);
+            } else {
                 console.debug('All tables are created');
+                setupDbComplete = true;
+            }
         });
     }).catch((err) => {
-        window.showMsgBox('info', 'Error', `Error opening or populating the database: ${err}`, ['OK']);
         console.debug(err);
+        window.showMsgBox('info', 'Error', `Error opening or populating the database: ${err}`, ['OK']);
+        app.exit(1);
     });
 
-const fontAwesomePath = path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free');
-const fontAwesomeTempPath = path.join(tempPath, 'fontawesome-free');
-FileManager.copyDir(fontAwesomePath, fontAwesomeTempPath);
+let setupAssetsComplete = false;
 
-const videoJsPath = path.join(__dirname, 'node_modules/video.js/dist');
-const videoJsTempPath = path.join(tempPath, 'video-js');
-FileManager.copyDir(videoJsPath, videoJsTempPath);
+try {
+    const fontAwesomePath = path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free');
+    const fontAwesomeTempPath = path.join(tempPath, 'fontawesome-free');
+    FileManager.copyDir(fontAwesomePath, fontAwesomeTempPath);
 
-const videoJsHttpStreamingPath = path.join(__dirname, 'node_modules/@videojs/http-streaming/dist');
-const videoJsHttpStreamingTempPath = path.join(tempPath, 'videojs-http-streaming');
-FileManager.copyDir(videoJsHttpStreamingPath, videoJsHttpStreamingTempPath);
+    const videoJsPath = path.join(__dirname, 'node_modules/video.js/dist');
+    const videoJsTempPath = path.join(tempPath, 'video-js');
+    FileManager.copyDir(videoJsPath, videoJsTempPath);
 
-const videoJsQualitySelectorPath = path.join(__dirname, 'node_modules/videojs-hls-quality-selector/dist');
-const videoJsQualitySelectorTempPath = path.join(tempPath, 'videojs-hls-quality-selector');
-FileManager.copyDir(videoJsQualitySelectorPath, videoJsQualitySelectorTempPath);
+    const videoJsHttpStreamingPath = path.join(__dirname, 'node_modules/@videojs/http-streaming/dist');
+    const videoJsHttpStreamingTempPath = path.join(tempPath, 'videojs-http-streaming');
+    FileManager.copyDir(videoJsHttpStreamingPath, videoJsHttpStreamingTempPath);
+
+    const videoJsQualitySelectorPath = path.join(__dirname, 'node_modules/videojs-hls-quality-selector/dist');
+    const videoJsQualitySelectorTempPath = path.join(tempPath, 'videojs-hls-quality-selector');
+    FileManager.copyDir(videoJsQualitySelectorPath, videoJsQualitySelectorTempPath);
+
+    setupAssetsComplete = true;
+} catch (err) {
+    console.debug('Error copying assets:', err);
+    window.showMsgBox('info', 'Error', `Error copying assets: ${err}`, ['OK']);
+    app.exit(1);
+}
 
 const handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager, history);
 const selectedListId = store.get('list.selected');
 
-setTimeout(async () => {
-    try {
-        if (selectedListId)
-            await handler.loadChannels(selectedListId);
-        else
-            await handler.loadImportAndSelectPlaylist();
-    } catch (err) {
-        console.debug(err.message);
-        await window.showMsgBox('info', 'Error', err.message, ['OK'])
+const interval = setInterval(async () => {
+    if (setupDbComplete && setupAssetsComplete) {
+        clearInterval(interval);
+        try {
+            if (selectedListId)
+                await handler.loadChannels(selectedListId);
+            else
+                await handler.loadImportAndSelectPlaylist();
+        } catch (err) {
+            console.debug(err.message);
+            await window.showMsgBox('info', 'Error', err.message, ['OK'])
+        }
     }
-}, 3000);
+}, 200);
 
 SafeIpc.setWindow(window);
 
