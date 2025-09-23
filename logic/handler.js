@@ -27,6 +27,8 @@ class Handler {
         this.history = history;
         this.playlists = playlists;
         this.categories = categories;
+
+        this.isReady = false;
     }
 
     /**
@@ -44,6 +46,8 @@ class Handler {
             .then((res) => {
                 handler.playlists = res[0];
                 handler.categories = res[1];
+
+                handler.isReady = true;
             }).catch((err) => { throw err; });
 
         return handler;

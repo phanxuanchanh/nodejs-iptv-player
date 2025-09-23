@@ -82,12 +82,19 @@ try {
     app.exit(1);
 }
 
-const handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager, history);
+let handler = null;
+const interval1 = setInterval(async () => {
+    if (setupDbComplete && setupAssetsComplete) {
+        clearInterval(interval1);
+        handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager, history);
+    }
+}, 200);
+
 const selectedListId = store.get('list.selected');
 
-const interval = setInterval(async () => {
-    if (setupDbComplete && setupAssetsComplete) {
-        clearInterval(interval);
+const interval2 = setInterval(async () => {
+    if (handler !== null && handler.isReady) {
+        clearInterval(interval2);
         try {
             if (selectedListId)
                 await handler.loadChannels(selectedListId);
