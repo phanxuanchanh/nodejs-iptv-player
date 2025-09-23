@@ -6,11 +6,17 @@
     "main-search-input-placeholder": "Search",
     "add-m3u-link-btn": "Add M3U link",
     "about-btn": "About This App",
-    "setting-modal-title": "Settings",
-    "select-language": "Select language:",
-
-    "m3u-name": "M3U Name",
-    "m3u-link": "M3U link",
-
-    "add-favorite-btn": "Add to Favorites"
+    "m3u-modal-title": "Enter M3U link",
+    "m3u-modal-name-lb": "M3U Name",
+    "m3u-modal-link-lb": "M3U link",
+    "settings-modal-title": "Settings",
+    "settings-modal-select-language": "Select language:",
+    "settings-modal-reset-lb": "Reset to default",
+    "settings-modal-reset-btn": "Reset",
+    "close-modal-btn": "Close",
+    "submit-modal-btn": "Submit",
+    "add-favorite-btn": "Add to Favorites",
+    "import-select-m3u-title": "Enter M3U link",
+    "import-select-m3u-name-lb": "M3U Name",
+    "import-select-m3u-link-lb": "M3U link"
 }

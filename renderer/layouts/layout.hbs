@@ -21,10 +21,12 @@
 
         <!-- Các chức năng chính -->
         <div class="d-flex flex-wrap align-items-center">
-            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite" title="{{t 'favorite-list-btn'}}">
+            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-favorite"
+                title="{{t 'favorite-list-btn'}}">
                 <i class="fa fa-heart"></i>
             </button>
-            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels" title="{{t 'all-channels-btn'}}">
+            <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-all-channels"
+                title="{{t 'all-channels-btn'}}">
                 <i class="fa fa-tv"></i>
             </button>
             <div class="dropdown">
@@ -43,7 +45,8 @@
         <!-- Bên phải: search và playlist -->
         <div class="ms-auto d-flex align-items-center">
             <!-- Search -->
-            <input class="form-control form-control-sm me-2" id="mainSearch" type="search" placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search">
+            <input class="form-control form-control-sm me-2" id="mainSearch" type="search"
+                placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search">
 
             <!-- Chọn playlist -->
             <select class="form-select form-select-sm me-2" id="selectPlaylist" style="width: 150px;">
@@ -51,7 +54,7 @@
                 {{#if selectedPlaylistId}}
                 <option>Choose playlist</option>
                 {{/if}}
-                {{#ifCond this.id '===' selectedPlaylistId}}
+                {{#ifCond this.id '===' ../selectedPlaylistId}}
                 <option value="{{this.id}}" selected>{{this.name}}</option>
                 {{else}}
                 <option value="{{this.id}}">{{this.name}}</option>
@@ -82,18 +85,19 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header">
-                    <h5 class="modal-title">Enter M3U link</h5>
+                    <h5 class="modal-title">{{t 'm3u-modal-title'}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label>{{t 'm3u-name'}}</label>
+                    <label>{{t 'm3u-modal-name-lb'}}</label>
                     <input type="text" class="form-control" id="m3u8name" value="" placeholder="Example" required />
-                    <label class="mt-2">{{t 'm3u-link'}}</label>
-                    <input type="text" class="form-control" id="m3u8link" value="" placeholder="https://example.com/index.m3u" required />
+                    <label class="mt-2">{{t 'm3u-modal-link-lb'}}</label>
+                    <input type="text" class="form-control" id="m3u8link" value=""
+                        placeholder="https://example.com/index.m3u" required />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">Submit</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">{{t 'submit-modal-btn'}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t 'close-modal-btn'}}</button>
                 </div>
             </div>
         </div>
@@ -104,19 +108,31 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{t 'setting-modal-title'}}</h5>
+                    <h5 class="modal-title">{{t 'settings-modal-title'}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label>{{t 'select-language'}}</label>
-                    <select id="selectLanguage">
-                        <option value="en">English</option>
-                        <option value="vi">Tiếng Việt</option>
-                    </select>
+                    <div class="form-group mb-3">
+                        <label>{{t 'settings-modal-reset-lb'}}</label>
+                        <button type="button" id="btnReset" class="btn btn-sm btn-danger mb-3">{{t 'settings-modal-reset-btn'}}</button>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>{{t 'settings-modal-select-language'}}</label>
+                        <select id="selectLanguage">
+                            {{#each consts.APP_LANGUAGES}}
+                            {{#ifCond this.code '===' ../selectedLanguage}}
+                                <option value="{{this.code}}" selected>{{this.text}}</option>
+                            {{else}}
+                                <option value="{{this.code}}">{{this.text}}</option>
+                            {{/ifCond}}
+                            {{/each}}        
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnSettingsSubmit" class="btn btn-sm btn-success">Submit</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnSettingsSubmit" class="btn btn-sm btn-success">{{t 'submit-modal-btn'}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t 'close-modal-btn'}}</button>
                 </div>
             </div>
         </div>

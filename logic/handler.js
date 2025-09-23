@@ -4,11 +4,17 @@ const FileManager = require("../shared/file.js");
 const History = require('./history.js');
 const Window = require('./windows.js');
 const path = require("path");
+const Consts = require("./../consts.js");
 
 /**
  * 
  */
 class Handler {
+    /**
+     * @type {{selectedPlaylistId: int, selectedLanguage: int}}
+     */
+    #config;
+
     /**
      * 
      * @param {{appPath: string, tempPath: string}} paths
@@ -28,6 +34,7 @@ class Handler {
         this.playlists = playlists;
         this.categories = categories;
 
+        this.#config = null;
         this.isReady = false;
     }
 
@@ -55,36 +62,47 @@ class Handler {
 
     /**
      * 
-     * @param {int} selectedListId 
+     * @param {{ selectedPlaylistId: int, selectedLanguage: int}} config 
+     */
+    setConfig(config) {
+        this.#config = config;
+    }
+
+    /**
+     * 
      * @param {string} search 
      * @param {int} page 
      * @param {intint} pageSize 
      */
-    async loadChannels(selectedListId, search = null, page = 1, pageSize = 24) {
-        const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
+    async loadChannels(search = null, page = 1, pageSize = 24) {
+        if (this.#config === null)
+            throw new Error('Config not set');
+
+        const paged = await Service.loadChannels(this.#config.selectedPlaylistId, search, page, pageSize);
         const html = this.pageRender.renderPage('home', {
             layout: 'layout',
             paginatedData: paged,
             playlists: this.playlists,
             categories: this.categories,
-            selectedPlaylistId: selectedListId,
-            enableBackBtn: false
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            selectedLanguage: this.#config.selectedLanguage,
+            enableBackBtn: false,
+            consts: Consts,
         });
         await this.window.load(html, true);
-        this.history.pushListPage(selectedListId, search, page, pageSize);
+        this.history.pushListPage(this.#config.selectedPlaylistId, search, page, pageSize);
     }
 
     /**
      * 
-     * @param {int} selectedListId 
      * @param {int} id 
      * @param {string} search 
      * @param {int} page 
      * @param {int} pageSize 
      */
-    async loadChannel(selectedListId, id, search = null, page = 1, pageSize = 24) {
+    async loadChannel(id, search = null, page = 1, pageSize = 24) {
         const channel = await Service.getChannel(id);
-        const paged = await Service.loadChannels(selectedListId, search, page, pageSize);
+        const paged = await Service.loadChannels(this.#config.selectedPlaylistId, search, page, pageSize);
         const html = this.pageRender.renderPage('play', {
             layout: 'layout',
             paginatedData: paged,
@@ -92,8 +110,10 @@ class Handler {
             search,
             playlists: this.playlists,
             categories: this.categories,
-            selectedPlaylistId: selectedListId,
-            enableBackBtn: true
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            selectedLanguage: this.#config.selectedLanguage,
+            enableBackBtn: true,
+            consts: Consts,
         });
 
         const videoJsCssPath = path.join(this.paths.tempPath, 'video-js', 'video-js.min.css')
@@ -123,7 +143,7 @@ class Handler {
      */
     async setFavoriteChannel(id, isFavorite) {
         if (id === undefined || id == null || id == 0)
-            return { status: 'invalid', message: 'Invalid channel ID'};
+            return { status: 'invalid', message: 'Invalid channel ID' };
 
         await Service.setFavoriteChannel(id, isFavorite);
         return { status: 'success', message: '' };
@@ -137,7 +157,10 @@ class Handler {
             layout: 'layout',
             playlists: this.playlists,
             categories: this.categories,
-            enableBackBtn: false
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            selectedLanguage: this.#config.selectedLanguage,
+            enableBackBtn: false,
+            consts: Consts,
         });
         const aboutJs = this.fileManager.getFileContent('/renderer/js/', 'about.js');
 
@@ -158,7 +181,7 @@ class Handler {
             { type: 'js', data: bootstrapjs },
             { type: 'js', data: importAndSelectJs }
         ];
-        
+
         await this.window.load(html, false, ...assetContents);
     }
 }

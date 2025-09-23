@@ -78,3 +78,10 @@ btnSettingsSubmitEl.addEventListener('click', function (e) {
     const submitSettingsPromise = window.api.submitSettings(selectedLanguage);
     submitSettingsPromise.then().catch();
 });
+
+const btnResetEl = document.getElementById('btnReset');
+
+btnResetEl.addEventListener('click', function (e) {
+    const resetSettingsPromise = window.api.resetSettings();
+    resetSettingsPromise.then().catch();
+});

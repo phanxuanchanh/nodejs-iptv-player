@@ -6,11 +6,17 @@
     "main-search-input-placeholder": "Tìm kiếm",
     "add-m3u-link-btn": "Thêm link M3U",
     "about-btn": "Về ứng dụng này",
-    "setting-modal-title": "Thiết lập",
-    "select-language": "Chọn ngôn ngữ:",
-
-    "m3u-name": "Tên M3U",
-    "m3u-link": "Link M3U",
-
-    "add-favorite-btn": "Thêm vào yêu thích"
+    "m3u-modal-title": "Nhập link M3U",
+    "m3u-modal-name-lb": "Tên M3U",
+    "m3u-modal-link-lb": "Link của M3U",
+    "settings-modal-title": "Thiết lập",
+    "settings-modal-select-language": "Chọn ngôn ngữ:",
+    "settings-modal-reset-lb": "Đặt lại về mặc định",
+    "settings-modal-reset-btn": "Đặt lại",
+    "close-modal-btn": "Đóng",
+    "submit-modal-btn": "Lưu",
+    "add-favorite-btn": "Thêm vào yêu thích",
+    "import-select-m3u-title": "Nhập link M3U",
+    "import-select-m3u-name-lb": "Tên M3U",
+    "import-select-m3u-link-lb": "Link của M3U"
 }

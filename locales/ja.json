@@ -1,0 +1,22 @@
+{
+    "favorite-list-btn": "お気に入りリスト",
+    "all-channels-btn": "すべてのチャンネル",
+    "categories-btn": "カテゴリー",
+    "settings-btn": "設定",
+    "main-search-input-placeholder": "検索",
+    "add-m3u-link-btn": "M3Uリンクを追加",
+    "about-btn": "このアプリについて",
+    "m3u-modal-title": "M3Uリンクを入力",
+    "m3u-modal-name-lb": "M3U名",
+    "m3u-modal-link-lb": "M3Uリンク",
+    "settings-modal-title": "設定",
+    "settings-modal-select-language": "言語を選択:",
+    "settings-modal-reset-lb": "デフォルトにリセット",
+    "settings-modal-reset-btn": "リセット",
+    "close-modal-btn": "閉じる",
+    "submit-modal-btn": "保存",
+    "add-favorite-btn": "お気に入りに追加",
+    "import-select-m3u-title": "M3Uリンクを入力",
+    "import-select-m3u-name-lb": "M3U名",
+    "import-select-m3u-link-lb": "M3Uリンク"
+}

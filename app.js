@@ -90,14 +90,17 @@ const interval1 = setInterval(async () => {
     }
 }, 200);
 
-const selectedListId = store.get('list.selected');
+const selectedListIdRaw = store.get('list.selected');
+const selectedListId = (selectedListIdRaw === undefined || selectedListIdRaw == null) ? 0 : parseInt(selectedListIdRaw, 10);
 
 const interval2 = setInterval(async () => {
     if (handler !== null && handler.isReady) {
         clearInterval(interval2);
         try {
-            if (selectedListId)
-                await handler.loadChannels(selectedListId);
+            handler.setConfig({ selectedPlaylistId: selectedListId, selectedLanguage: selectedLanguage });
+
+            if (selectedListId !== 0)
+                await handler.loadChannels();
             else
                 await handler.loadImportAndSelectPlaylist();
         } catch (err) {
@@ -110,11 +113,11 @@ const interval2 = setInterval(async () => {
 SafeIpc.setWindow(window);
 
 SafeIpc.on('list.load', async (event, search, page, pageSize) => {
-    await handler.loadChannels(selectedListId, search, page, pageSize);
+    await handler.loadChannels(search, page, pageSize);
 });
 
 SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {
-    await handler.loadChannel(selectedListId, id, search, page, pageSize);
+    await handler.loadChannel(id, search, page, pageSize);
 });
 
 SafeIpc.handle('channel.addfavorite', async (event, id) => {
@@ -134,8 +137,9 @@ SafeIpc.handle('add.m3u8.link', async (event, name, url) => {
 
 SafeIpc.on('list.select', async (event, id) => {
     store.set('list.selected', id);
-
+    handler.setConfig({ selectedPlaylistId: id, selectedLanguage: selectedLanguage });
     SqliteExecution.close();
+
     app.relaunch();
     app.exit(0);
 });
@@ -150,9 +154,18 @@ SafeIpc.on('link.open', async (event, url) => {
 
 SafeIpc.on('settings.submit', async (event, lang) => {
     store.set('language.selected', lang);
-
+    handler.setConfig({ selectedPlaylistId: selectedListId, selectedLanguage: lang });
     SqliteExecution.close();
 
+    app.relaunch();
+    app.exit(0);
+});
+
+SafeIpc.on('settings.reset', async (event) => {
+    store.clear();
+    await SqliteExecution.close();
+    FileManager.deleteDir(tempPath);
+    
     app.relaunch();
     app.exit(0);
 });

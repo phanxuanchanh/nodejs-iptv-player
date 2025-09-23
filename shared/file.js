@@ -42,6 +42,16 @@ class FileManager {
         if (!fs.existsSync(destPath))
             fs.cpSync(srcPath, destPath, { recursive: true });
     }
+
+    /**
+     * 
+     * @param {string} dirPath 
+     */
+    static deleteDir(dirPath) {
+        if (fs.existsSync(dirPath)) {
+            fs.rmSync(dirPath, { recursive: true, force: true });
+        }
+    }
 }
 
 module.exports = FileManager;
