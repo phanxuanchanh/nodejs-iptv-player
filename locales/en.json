@@ -16,7 +16,11 @@
     "close-modal-btn": "Close",
     "submit-modal-btn": "Submit",
     "add-favorite-btn": "Add to Favorites",
+    "remove-favorite-btn": "Remove from Favorites",
     "import-select-m3u-title": "Enter M3U link",
     "import-select-m3u-name-lb": "M3U Name",
-    "import-select-m3u-link-lb": "M3U link"
+    "import-select-m3u-link-lb": "M3U link",
+    "channels-favorite-list-title": "Favorite Channels",
+    "channels-list-title": "All Channels",
+    "channels-search-result-title": "Search Results"
 }

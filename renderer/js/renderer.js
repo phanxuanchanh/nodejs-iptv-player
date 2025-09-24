@@ -1,7 +1,20 @@
+document.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", e => {
+        e.preventDefault();
+    });
+});
+
+const btnFavoriteEl = document.getElementById('btn-favorite');
+
+btnFavoriteEl.addEventListener('click', function (e) {
+    const gotoFavoritesPromise = window.api.loadList(true, null, 1, 24);
+    gotoFavoritesPromise.then().catch();
+});
+
 const btnAllChannelsEl = document.getElementById('btn-all-channels');
 
 btnAllChannelsEl.addEventListener('click', function (e) {
-    const gotoAllChannelsPromise = window.api.loadList(null, 1, 24);
+    const gotoAllChannelsPromise = window.api.loadList(false, null, 1, 24);
     gotoAllChannelsPromise.then().catch();
 });
 
@@ -34,28 +47,6 @@ selectPlaylistEl.addEventListener('change', function (e) {
     selectListPromise.then().catch();
 });
 
-const channelCards = document.querySelectorAll('.channel-card');
-
-channelCards.forEach((el, index) => {
-    el.addEventListener('click', () => {
-        let id = el.getAttribute('data-id');
-        let getChannelPromise = window.api.getChannel(id);
-
-        getChannelPromise.then((result) => {
-            console.log('Channel clicked:', id, result);
-        });
-    });
-});
-
-function getPagination(page, pageSize) {
-    let loadListPromise = window.api.loadList(null, page, pageSize);
-    loadListPromise.then((result) => {
-        console.log('Pagination clicked:', page, pageSize, result);
-    }).catch((err) => {
-        alert('Lỗi');
-    });
-}
-
 const mainSearchEl = document.getElementById('mainSearch');
 
 mainSearchEl.addEventListener('keydown', function (e) {
@@ -63,8 +54,9 @@ mainSearchEl.addEventListener('keydown', function (e) {
         return;
 
     const keyword = e.target.value;
+    const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
 
-    window.api.loadList(keyword, 1, 24)
+    window.api.loadList(showFavoriteList, keyword, 1, 24)
         .then(result => {
             console.log('Search input:', keyword, result);
         })

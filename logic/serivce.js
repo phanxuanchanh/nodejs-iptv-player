@@ -9,7 +9,7 @@ class Service {
      * 
      * @returns {Promise<{id: int, name: string, urlOrFileName: string, createdAt: Date}[]>}
      */
-    static async loadPlaylists() {
+    static async getPlaylists() {
         const query = 'SELECT * FROM all_lists';
         return await SqliteExecution.getMany(query);
     }
@@ -17,23 +17,40 @@ class Service {
     /**
      * 
      * @param {int} listId 
+     * @param {boolean} favorited
      * @param {string} search 
      * @param {int} page 
      * @param {int} pageSize 
-     * @returns {Promise<{page: int, pageSize: int, items: {id: int, name: string, logo: string, group: string, url: string, list_id: int}[]}>}
+     * @returns {Promise<{
+     *  favorited: boolean, searchKeyword: string, page: int, pageSize: int, items: {
+     *      id: int, name: string, logo: string, group: string, url: string, list_id: int, favorited: 0|1
+     *  }[]}>}
      */
-    static async loadChannels(listId, search = null, page = 1, pageSize = 24) {
+    static async getChannels(listId, showFavoriteList = false, search = null, page = 1, pageSize = 24) {
         let where = null;
         let whereParams = null;
-        if (search) {
-            where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
-            whereParams = [`%${search}%`, `%${search}%`, listId];
+        let showFavoriteListInt = showFavoriteList ? 1 : 0;
+        if (showFavoriteListInt === 1) {
+            if (search) {
+                where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ? AND favorited = 1';
+                whereParams = [`%${search}%`, `%${search}%`, listId];
+            } else {
+                where = 'list_id = ? AND favorited = 1';
+                whereParams = [listId];
+            }
         } else {
-            where = 'list_id = ?';
-            whereParams = [listId];
+            if (search) {
+                where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
+                whereParams = [`%${search}%`, `%${search}%`, listId];
+            } else {
+                where = 'list_id = ?';
+                whereParams = [listId];
+            }
         }
 
         let paginatedData = await SqliteExecution.getPaginatedData2('all_channels', where, whereParams, page || 1, pageSize || 16);
+        paginatedData.favorited = showFavoriteList;
+        paginatedData.searchKeyword = search;
 
         return paginatedData;
     }
@@ -41,7 +58,7 @@ class Service {
     /**
      * 
      * @param {int} id 
-     * @returns {{id: int, name: string, logo: string, group: string, url: string, list_id: int}}
+     * @returns {{id: int, name: string, logo: string, group: string, url: string, list_id: int, favorited: 0|1}}
      */
     static async getChannel(id) {
         if (id === undefined || id == null || id == 0)
@@ -75,8 +92,6 @@ class Service {
             const addListTableQuery = 'INSERT INTO all_lists (name, urlOrFileName) VALUES (?, ?)'
             const itemData = [name, url];
             const res = await SqliteExecution.insert(addListTableQuery, itemData);
-
-            console.log(res.lastID);
 
             const channels = await getChannelsFromM3U8(url);
             const addChannelsQuery = 'INSERT INTO all_channels (name, logo, "group", url, list_id) VALUES (?, ?, ?, ?, ?)';

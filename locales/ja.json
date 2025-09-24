@@ -16,7 +16,11 @@
     "close-modal-btn": "閉じる",
     "submit-modal-btn": "保存",
     "add-favorite-btn": "お気に入りに追加",
+    "remove-favorite-btn": "お気に入りから削除",
     "import-select-m3u-title": "M3Uリンクを入力",
     "import-select-m3u-name-lb": "M3U名",
-    "import-select-m3u-link-lb": "M3Uリンク"
+    "import-select-m3u-link-lb": "M3Uリンク",
+    "channels-favorite-list-title": "お気に入りチャンネル",
+    "channels-list-title": "すべてのチャンネル",
+    "channels-search-result-title": "検索結果"
 }

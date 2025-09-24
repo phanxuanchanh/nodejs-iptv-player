@@ -26,14 +26,20 @@
                             <p class="card-text mb-0 mr-2">{{item.group}}</p>
                         </div>
                         <div>
+                            {{#ifCond item.favorited '===' 1}}
+                            <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-remove-favorite" title="{{t 'remove-favorite-btn'}}">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                            {{else}}
                             <button class="btn btn-sm me-2 p-2 text-danger btn-func" id="btn-add-favorite" title="{{t 'add-favorite-btn'}}">
                                 <i class="far fa-heart"></i>
                             </button>
+                            {{/ifCond}}
 
-                            <button id="recordToggle" class="btn btn-sm me-2 p-2 px-5 text-success btn-func">
+                            {{!-- <button id="recordToggle" class="btn btn-sm me-2 p-2 px-5 text-success btn-func">
                                 <i class="far fa-circle"></i>
                                 <span id="timer" class="ms-2"></span>
-                            </button>
+                            </button> --}}
                             
                         </div>
 

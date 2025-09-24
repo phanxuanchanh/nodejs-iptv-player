@@ -49,7 +49,7 @@ class Handler {
      */
     static Init(paths, window, pageRender, fileManager, history) {
         const handler = new Handler(paths, window, pageRender, fileManager, history, []);
-        Promise.all([Service.loadPlaylists(), Service.loadCategories()])
+        Promise.all([Service.getPlaylists(), Service.loadCategories()])
             .then((res) => {
                 handler.playlists = res[0];
                 handler.categories = res[1];
@@ -70,15 +70,16 @@ class Handler {
 
     /**
      * 
+     * @param {boolean} showFavoriteList
      * @param {string} search 
      * @param {int} page 
      * @param {intint} pageSize 
      */
-    async loadChannels(search = null, page = 1, pageSize = 24) {
+    async loadChannels(showFavoriteList = false, search = null, page = 1, pageSize = 24) {
         if (this.#config === null)
             throw new Error('Config not set');
 
-        const paged = await Service.loadChannels(this.#config.selectedPlaylistId, search, page, pageSize);
+        const paged = await Service.getChannels(this.#config.selectedPlaylistId, showFavoriteList, search, page, pageSize);
         const html = this.pageRender.renderPage('home', {
             layout: 'layout',
             paginatedData: paged,
@@ -89,7 +90,9 @@ class Handler {
             enableBackBtn: false,
             consts: Consts,
         });
-        await this.window.load(html, true);
+        const homeJs = this.fileManager.getFileContent('/renderer/js/', 'home.js')
+
+        await this.window.load(html, true, { type: 'js', data: homeJs });
         this.history.pushListPage(this.#config.selectedPlaylistId, search, page, pageSize);
     }
 
@@ -102,7 +105,7 @@ class Handler {
      */
     async loadChannel(id, search = null, page = 1, pageSize = 24) {
         const channel = await Service.getChannel(id);
-        const paged = await Service.loadChannels(this.#config.selectedPlaylistId, search, page, pageSize);
+        const paged = await Service.getChannels(this.#config.selectedPlaylistId, false, search, page, pageSize);
         const html = this.pageRender.renderPage('play', {
             layout: 'layout',
             paginatedData: paged,
@@ -150,7 +153,7 @@ class Handler {
     }
 
     /**
-     * 
+     * @returns {Promise<void>}
      */
     async loadAbout() {
         const html = this.pageRender.renderPage('about', {
@@ -168,7 +171,7 @@ class Handler {
     }
 
     /**
-     * 
+     * @returns {Promise<void>}
      */
     async loadImportAndSelectPlaylist() {
         const bootstrapcss = this.fileManager.getFileContent('/renderer/css/', 'bootstrap.min.css');

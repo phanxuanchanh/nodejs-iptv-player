@@ -82,6 +82,7 @@ try {
     app.exit(1);
 }
 
+/** @type {Handler} */
 let handler = null;
 const interval1 = setInterval(async () => {
     if (setupDbComplete && setupAssetsComplete) {
@@ -112,8 +113,8 @@ const interval2 = setInterval(async () => {
 
 SafeIpc.setWindow(window);
 
-SafeIpc.on('list.load', async (event, search, page, pageSize) => {
-    await handler.loadChannels(search, page, pageSize);
+SafeIpc.on('list.load', async (event, favorited, search, page, pageSize) => {
+    await handler.loadChannels(favorited, search, page, pageSize);
 });
 
 SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {
@@ -122,6 +123,10 @@ SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {
 
 SafeIpc.handle('channel.addfavorite', async (event, id) => {
     return await handler.setFavoriteChannel(id, isFavorite = true);
+});
+
+SafeIpc.handle('channel.removefavorite', async (event, id) => {
+    return await handler.setFavoriteChannel(id, isFavorite = false);
 });
 
 SafeIpc.handle('add.m3u8.link', async (event, name, url) => {

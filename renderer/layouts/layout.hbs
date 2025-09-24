@@ -75,10 +75,15 @@
             </button>
         </div>
     </nav>
-
-    <div class="container-fluid mt-3">
+    {{#ifCond paginatedData.favorited '===' true}}
+    <div class="container-fluid mt-3" id="content" favorite-content="true">
         {{{body}}}
     </div>
+    {{else}}
+    <div class="container-fluid mt-3" id="content" favorite-content="false">
+        {{{body}}}
+    </div>
+    {{/ifCond}}
 
     <!-- Modal -->
     <div class="modal fade" id="addM3U8Modal" tabindex="-1" aria-hidden="true">

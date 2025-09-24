@@ -74,17 +74,38 @@ player.on('loadedmetadata', function () {
 
 const btnAddFavoriteEl = document.getElementById('btn-add-favorite');
 
-btnAddFavoriteEl.addEventListener('click', function (e) {
-    if (selectedChannelId == 0) {
-        alert('No channel selected');
-        return;
-    }
+if (btnAddFavoriteEl !== null && btnAddFavoriteEl !== undefined) {
+    btnAddFavoriteEl.addEventListener('click', function (e) {
+        if (selectedChannelId == 0) {
+            alert('No channel selected');
+            return;
+        }
 
-    const addFavoritePromise = window.api.addFavorite(selectedChannelId);
+        const addFavoritePromise = window.api.addFavorite(selectedChannelId);
 
-    addFavoritePromise.then(() => {
-        alert('Added to favorites');
-    }).catch((err) => {
-        alert('Error adding to favorites: ' + err.message);
+        addFavoritePromise.then(() => {
+            alert('Added to favorites');
+            btnAddFavoriteEl.innerHTML = '<i class="fa fa-heart"></i>';
+        }).catch((err) => {
+            alert('Error adding to favorites: ' + err.message);
+        });
     });
-});
+}
+
+const btnRemoveFavoriteEl = document.getElementById('btn-remove-favorite');
+
+if (btnRemoveFavoriteEl !== null && btnRemoveFavoriteEl !== undefined) {
+    btnRemoveFavoriteEl.addEventListener('click', function (e) {
+        if (selectedChannelId == 0) {
+            alert('No channel selected');
+            return;
+        }
+        const removeFavoritePromise = window.api.removeFavorite(selectedChannelId);
+        removeFavoritePromise.then(() => {
+            alert('Removed from favorites');
+            btnRemoveFavoriteEl.innerHTML = '<i class="far fa-heart"></i>';
+        }).catch((err) => {
+            alert('Error removing from favorites: ' + err.message);
+        });
+    });
+}

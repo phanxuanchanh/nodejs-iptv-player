@@ -16,7 +16,11 @@
     "close-modal-btn": "Đóng",
     "submit-modal-btn": "Lưu",
     "add-favorite-btn": "Thêm vào yêu thích",
+    "remove-favorite-btn": "Xóa khỏi yêu thích",
     "import-select-m3u-title": "Nhập link M3U",
     "import-select-m3u-name-lb": "Tên M3U",
-    "import-select-m3u-link-lb": "Link của M3U"
+    "import-select-m3u-link-lb": "Link của M3U",
+    "channels-favorite-list-title": "Kênh yêu thích",
+    "channels-list-title": "Toàn bộ các kênh",
+    "channels-search-result-title": "Kết quả tìm kiếm"
 }

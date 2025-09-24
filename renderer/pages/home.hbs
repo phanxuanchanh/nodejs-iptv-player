@@ -1,3 +1,18 @@
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        {{#ifCond paginatedData.favorited '===' true}}
+        <h4>{{t 'channels-favorite-list-title' }}</h4>
+        {{#ifCond paginatedData.searchKeyword '!==' null}}
+        <p>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</p>
+        {{/ifCond}}
+        {{else}}
+        <h4>{{t 'channels-list-title' }}</h4>
+        {{#ifCond paginatedData.searchKeyword '!==' null}}
+        <p>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</p>
+        {{/ifCond}}
+        {{/ifCond}}
+    </div>
+</div>
 <div class="row">
     {{#each paginatedData.items}}
     <div class="col-6 col-md-4 col-lg-3">
@@ -14,14 +29,15 @@
     {{/each}}
 </div>
 
-<div class="row">
+<div class="row" id="pagination">
     <div class="col text-center">
-        {{#ifCond paginatedData.page '<=' 1}} 
-        <a href="#" class="previous round">&#8249;</a>
-        {{else}}
-        <a href="#" class="previous round" onclick="getPagination({{math paginatedData.page '-' 1}}, {{ paginatedData.pageSize }});">&#8249;</a>   
-        {{/ifCond}}
+        {{#ifCond paginatedData.page '<=' 1}} <a href="#" class="previous round">&#8249;</a>
+            {{else}}
+            <a href="#" class="previous round"
+                onclick="getPagination({{math paginatedData.page '-' 1}}, {{ paginatedData.pageSize }});">&#8249;</a>
+            {{/ifCond}}
 
-        <a href="#" class="next round" onclick="getPagination({{math paginatedData.page '+' 1}}, {{ paginatedData.pageSize }});">&#8250;</a>
+            <a href="#" class="next round"
+                onclick="getPagination({{math paginatedData.page '+' 1}}, {{ paginatedData.pageSize }});">&#8250;</a>
     </div>
 </div>
