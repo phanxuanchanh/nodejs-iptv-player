@@ -22,5 +22,9 @@
     "import-select-m3u-link-lb": "Link của M3U",
     "channels-favorite-list-title": "Kênh yêu thích",
     "channels-list-title": "Toàn bộ các kênh",
-    "channels-search-result-title": "Kết quả tìm kiếm"
+    "channels-search-result-title": "Kết quả tìm kiếm",
+    "about-title": "Về ứng dụng này",
+    "about-description": "Trình phát IPTV cho Windows phát trực tiếp các kênh TV từ danh sách phát M3U.",
+    "play-channel-list": "Danh sách kênh",
+    "play-search-input-placeholder": "Tìm kiếm kênh"
 }

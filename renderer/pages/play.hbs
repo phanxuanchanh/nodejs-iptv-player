@@ -1,8 +1,8 @@
 <div class="row mt-2 h-100" style="">
     <!-- Left Sidebar: Channel List -->
     <div class="col-md-3 channel-list">
-        <h5 class="text-center">Channel List</h5>
-        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search channels..."
+        <h5 class="text-center">{{t 'play-channel-list'}}</h5>
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="{{t 'play-search-input-placeholder'}}"
             value="{{search}}">
         <ul class="list-group channel-items" style="height: 80%; overflow-y:scroll;">
             {{#each paginatedData.items}}

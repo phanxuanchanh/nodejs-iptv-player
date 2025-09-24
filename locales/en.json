@@ -22,5 +22,9 @@
     "import-select-m3u-link-lb": "M3U link",
     "channels-favorite-list-title": "Favorite Channels",
     "channels-list-title": "All Channels",
-    "channels-search-result-title": "Search Results"
+    "channels-search-result-title": "Search Results",
+    "about-title": "About This App",
+    "about-description": "An IPTV player for Windows that streams live TV channels from M3U playlists.",
+    "play-channel-list": "Channel List",
+    "play-search-input-placeholder": "Search channels"
 }

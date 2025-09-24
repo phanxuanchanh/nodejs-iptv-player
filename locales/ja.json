@@ -22,5 +22,9 @@
     "import-select-m3u-link-lb": "M3Uリンク",
     "channels-favorite-list-title": "お気に入りチャンネル",
     "channels-list-title": "すべてのチャンネル",
-    "channels-search-result-title": "検索結果"
+    "channels-search-result-title": "検索結果",
+    "about-title": "このアプリについて",
+    "about-description": "M3UプレイリストからライブTVチャンネルをストリーミングするWindows用のIPTVプレーヤー。",
+    "play-channel-list": "チャンネルリスト",
+    "play-search-input-placeholder": "チャンネルを検索"
 }
