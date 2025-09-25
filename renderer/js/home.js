@@ -1,6 +1,8 @@
 function getPagination(page, pageSize) {
     const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
-    window.api.loadList(showFavoriteList, null, page, pageSize);
+    const category = document.getElementById('content').getAttribute('content-by-cat');
+    const searchKeyword = document.getElementById('mainSearch').value;
+    window.api.loadList(showFavoriteList, category, searchKeyword, page, pageSize);
 }
 
 const channelCards = document.querySelectorAll('.channel-card');

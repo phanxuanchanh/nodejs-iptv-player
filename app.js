@@ -113,8 +113,8 @@ const interval2 = setInterval(async () => {
 
 SafeIpc.setWindow(window);
 
-SafeIpc.on('list.load', async (event, favorited, search, page, pageSize) => {
-    await handler.loadChannels(favorited, search, page, pageSize);
+SafeIpc.on('list.load', async (event, favorited, categoryName, search, page, pageSize) => {
+    await handler.loadChannels(favorited, categoryName, search, page, pageSize);
 });
 
 SafeIpc.on("channel.get", async (event, id, search, page, pageSize) => {

@@ -73,15 +73,16 @@ class Handler {
     /**
      * 
      * @param {boolean} showFavoriteList
+     * @param {string} categoryName
      * @param {string} search 
      * @param {int} page 
-     * @param {intint} pageSize 
+     * @param {int} pageSize 
      */
-    async loadChannels(showFavoriteList = false, search = null, page = 1, pageSize = 24) {
+    async loadChannels(showFavoriteList = false, categoryName = 'all', search = null, page = 1, pageSize = 24) {
         if (this.#config === null)
             throw new Error('Config not set');
 
-        const paged = await Service.getChannels(this.#config.selectedPlaylistId, showFavoriteList, search, page, pageSize);
+        const paged = await Service.getChannels(this.#config.selectedPlaylistId, showFavoriteList, categoryName, search, page, pageSize);
         const html = this.pageRender.renderPage('home', {
             layout: 'layout',
             paginatedData: paged,
@@ -107,7 +108,7 @@ class Handler {
      */
     async loadChannel(id, search = null, page = 1, pageSize = 24) {
         const channel = await Service.getChannel(id);
-        const paged = await Service.getChannels(this.#config.selectedPlaylistId, false, search, page, pageSize);
+        const paged = await Service.getChannels(this.#config.selectedPlaylistId, false, 'all', search, page, pageSize);
         const html = this.pageRender.renderPage('play', {
             layout: 'layout',
             paginatedData: paged,

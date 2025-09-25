@@ -6,11 +6,27 @@ document.querySelectorAll("a").forEach(a => {
 
 const btnFavoriteEl = document.getElementById('btn-favorite');
 
-btnFavoriteEl.addEventListener('click', function (e) { window.api.loadList(true, null, 1, 24); });
+btnFavoriteEl.addEventListener('click', function (e) { 
+    const category = document.getElementById('content').getAttribute('content-by-cat');
+    window.api.loadList(true, category, null, 1, 24); 
+});
 
 const btnAllChannelsEl = document.getElementById('btn-all-channels');
 
-btnAllChannelsEl.addEventListener('click', function (e) { window.api.loadList(false, null, 1, 24); });
+btnAllChannelsEl.addEventListener('click', function (e) { 
+    const category = document.getElementById('content').getAttribute('content-by-cat');
+    window.api.loadList(false, category, null, 1, 24); 
+});
+
+const categoriesDropdownItemEls = document.querySelectorAll('.categories-dropdown-item');
+
+categoriesDropdownItemEls.forEach((el, index) => {
+    el.addEventListener('click', function (e) {
+        let category = el.innerText;
+        const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
+        window.api.loadList(showFavoriteList, category, null, 1, 24);
+    });
+});
 
 const aboutEl = document.getElementById('btn-about');
 
@@ -41,8 +57,9 @@ mainSearchEl.addEventListener('keydown', function (e) {
 
     const keyword = e.target.value;
     const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
+    const category = document.getElementById('content').getAttribute('content-by-cat');
 
-    window.api.loadList(showFavoriteList, keyword, 1, 24);
+    window.api.loadList(showFavoriteList, category, keyword, 1, 24);
 });
 
 const btnSettingsSubmitEl = document.getElementById('btnSettingsSubmit');

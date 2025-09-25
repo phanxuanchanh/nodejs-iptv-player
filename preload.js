@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
-  loadList: (favorited, search, page, pageSize) => ipcRenderer.send("list.load", favorited, search, page, pageSize),
+  loadList: (favorited, categoryName, search, page, pageSize) => ipcRenderer.send("list.load", favorited, categoryName, search, page, pageSize),
   selectList: (id) => ipcRenderer.send('list.select', id),
   getChannel: (id, search, page, pageSize) => ipcRenderer.send("channel.get", id, search, page, pageSize),
   addFavorite: (id) => ipcRenderer.invoke('channel.addfavorite', id),

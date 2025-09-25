@@ -31,12 +31,21 @@
             </button>
             <div class="dropdown">
                 <button class="btn btn-sm me-2 p-2 text-white btn-func" id="btn-categories" data-bs-toggle="dropdown"
-                    aria-expanded="false" title="{{t 'categories-btn'}}">
-                    <i class="fa fa-list"></i>
+                    aria-expanded="false" title="{{t 'categories-btn'}}" {{#if paginatedData }} style="padding: 4.5px !important;" {{/if}}>
+                    <i class="fa fa-list"></i> 
+                    {{#if paginatedData}}
+                    {{#ifCond paginatedData.selectedCategory '===' 'all'}}
+                    <span>{{t 'categories-all-menu-item'}}</span>
+                    {{else}}
+                    {{paginatedData.selectedCategory}}
+                    {{/ifCond}}
+                    {{/if}}
                 </button>
                 <ul class="dropdown-menu bg-dark categories-dropdown-menu" aria-labelledby="btn-categories">
+                    <li><a class="dropdown-item text-warning categories-dropdown-item" href="#">{{t 'categories-all-menu-item'}}</a></li>
                     {{#each categories}}
-                    <li><a class="dropdown-item text-white" href="#">{{this.categoryName}}</a></li>
+                    <li><a class="dropdown-item text-white categories-dropdown-item" href="#">{{this.categoryName}}</a>
+                    </li>
                     {{/each}}
                 </ul>
             </div>
@@ -45,9 +54,12 @@
         <!-- Bên phải: search và playlist -->
         <div class="ms-auto d-flex align-items-center">
             <!-- Search -->
-            <input class="form-control form-control-sm me-2" id="mainSearch" type="search"
-                placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search">
-
+            {{#if paginatedData}}
+            <input class="form-control form-control-sm me-2" id="mainSearch" type="search" placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search"
+                value="{{paginatedData.searchKeyword}}">
+            {{else}}
+            <input class="form-control form-control-sm me-2" id="mainSearch" type="search" placeholder="{{t 'main-search-input-placeholder'}}" aria-label="Search">
+            {{/if}}
             <!-- Chọn playlist -->
             <select class="form-select form-select-sm me-2" id="selectPlaylist" style="width: 150px;">
                 {{#each playlists}}
@@ -75,15 +87,15 @@
             </button>
         </div>
     </nav>
-    {{#ifCond paginatedData.favorited '===' true}}
-    <div class="container-fluid mt-3" id="content" favorite-content="true">
+    {{#if paginatedData}}
+    <div class="container-fluid mt-3" id="content" favorite-content="{{paginatedData.favorited}}" content-by-cat="{{paginatedData.selectedCategory}}">
         {{{body}}}
     </div>
     {{else}}
-    <div class="container-fluid mt-3" id="content" favorite-content="false">
+    <div class="container-fluid mt-3" id="content" favorite-content="false" content-by-cat="all">
         {{{body}}}
     </div>
-    {{/ifCond}}
+    {{/if}}
 
     <!-- Modal -->
     <div class="modal fade" id="addM3U8Modal" tabindex="-1" aria-hidden="true">
@@ -101,8 +113,10 @@
                         placeholder="https://example.com/index.m3u" required />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">{{t 'submit-modal-btn'}}</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t 'close-modal-btn'}}</button>
+                    <button type="button" id="btnM3u8Submit" class="btn btn-sm btn-success">{{t
+                        'submit-modal-btn'}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t
+                        'close-modal-btn'}}</button>
                 </div>
             </div>
         </div>
@@ -119,7 +133,8 @@
                 <div class="modal-body">
                     <div class="form-group mb-3">
                         <label>{{t 'settings-modal-reset-lb'}}</label>
-                        <button type="button" id="btnReset" class="btn btn-sm btn-danger mb-3">{{t 'settings-modal-reset-btn'}}</button>
+                        <button type="button" id="btnReset" class="btn btn-sm btn-danger mb-3">{{t
+                            'settings-modal-reset-btn'}}</button>
                     </div>
 
                     <div class="form-group mb-3">
@@ -127,17 +142,19 @@
                         <select id="selectLanguage">
                             {{#each consts.APP_LANGUAGES}}
                             {{#ifCond this.code '===' ../selectedLanguage}}
-                                <option value="{{this.code}}" selected>{{this.text}}</option>
+                            <option value="{{this.code}}" selected>{{this.text}}</option>
                             {{else}}
-                                <option value="{{this.code}}">{{this.text}}</option>
+                            <option value="{{this.code}}">{{this.text}}</option>
                             {{/ifCond}}
-                            {{/each}}        
+                            {{/each}}
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnSettingsSubmit" class="btn btn-sm btn-success">{{t 'submit-modal-btn'}}</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t 'close-modal-btn'}}</button>
+                    <button type="button" id="btnSettingsSubmit" class="btn btn-sm btn-success">{{t
+                        'submit-modal-btn'}}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{t
+                        'close-modal-btn'}}</button>
                 </div>
             </div>
         </div>

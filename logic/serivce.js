@@ -22,35 +22,41 @@ class Service {
      * @param {int} page 
      * @param {int} pageSize 
      * @returns {Promise<{
-     *  favorited: boolean, searchKeyword: string, page: int, pageSize: int, items: {
+     *  favorited: boolean, searchKeyword: string, selectedCategory: string, page: int, pageSize: int, items: {
      *      id: int, name: string, logo: string, group: string, url: string, list_id: int, favorited: 0|1
      *  }[]}>}
      */
-    static async getChannels(listId, showFavoriteList = false, search = null, page = 1, pageSize = 24) {
-        let where = null;
-        let whereParams = null;
-        let showFavoriteListInt = showFavoriteList ? 1 : 0;
-        if (showFavoriteListInt === 1) {
-            if (search) {
-                where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ? AND favorited = 1';
-                whereParams = [`%${search}%`, `%${search}%`, listId];
-            } else {
-                where = 'list_id = ? AND favorited = 1';
-                whereParams = [listId];
-            }
-        } else {
-            if (search) {
-                where = '(name LIKE ? OR "group" LIKE ?) AND list_id = ?';
-                whereParams = [`%${search}%`, `%${search}%`, listId];
-            } else {
-                where = 'list_id = ?';
-                whereParams = [listId];
-            }
+    static async getChannels(listId, showFavoriteList = false, category = 'all', search = null, page = 1, pageSize = 24) {
+        let where = '';
+        let whereParams = [];
+
+        where += showFavoriteList ? 'favorited = 1' : '';
+
+        if(search){
+            if(where == '')
+                where += '(name LIKE ? OR "group" LIKE ?)';
+            else
+                where += ' AND (name LIKE ? OR "group" LIKE ?)';
+
+            whereParams.push(`%${search}%`, `%${search}%`);
+        }
+
+        if(where == '')
+            where += ' list_id = ?';
+        else
+            where += ' AND list_id = ?';
+
+        whereParams.push(listId);
+
+        if(category && category.toLowerCase() !== 'all') {
+            where += ' AND "group" LIKE ?';
+            whereParams.push(`%${category}%`);
         }
 
         let paginatedData = await SqliteExecution.getPaginatedData2('all_channels', where, whereParams, page || 1, pageSize || 16);
         paginatedData.favorited = showFavoriteList;
         paginatedData.searchKeyword = search;
+        paginatedData.selectedCategory = category;
 
         return paginatedData;
     }
@@ -115,7 +121,19 @@ class Service {
      */
     static async getCategories() {
         const query = 'SELECT DISTINCT "group"  as categoryName FROM all_channels';
-        return await SqliteExecution.getMany(query);
+        const rawCategories = await SqliteExecution.getMany(query);
+
+        const categories = [];
+        for(let rawCategory of rawCategories) {
+            rawCategory.categoryName.split(';').forEach(cat => {
+                const trimmedCat = cat.trim();
+                if (trimmedCat.length > 0 && !categories.includes(trimmedCat)) {
+                    categories.push({ categoryName: trimmedCat });
+                }
+            });
+        };
+
+        return categories
     }
 }
 

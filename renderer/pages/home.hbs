@@ -1,16 +1,26 @@
 <div class="row mb-3">
     <div class="col-12 text-center">
-        {{#ifCond paginatedData.favorited '===' true}}
+        {{#if paginatedData.favorited}}
         <h4>{{t 'channels-favorite-list-title' }}</h4>
+        <p>
         {{#ifCond paginatedData.searchKeyword '!==' null}}
-        <p>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</p>
+        <span>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</span>;
         {{/ifCond}}
+        {{#ifCond paginatedData.selectedCategory '!==' 'all'}}
+        <span>{{t 'channels-category-title' }}: "{{paginatedData.selectedCategory}}"</span>
+        {{/ifCond}}
+        </p>
         {{else}}
         <h4>{{t 'channels-list-title' }}</h4>
+        <p>
         {{#ifCond paginatedData.searchKeyword '!==' null}}
-        <p>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</p>
+        <span>{{t 'channels-search-result-title' }}: "{{paginatedData.searchKeyword}}"</span>;
         {{/ifCond}}
+        {{#ifCond paginatedData.selectedCategory '!==' 'all'}}
+        <span>{{t 'channels-category-title' }}: "{{paginatedData.selectedCategory}}"</span>
         {{/ifCond}}
+        </p>
+        {{/if}}
     </div>
 </div>
 <div class="row">
