@@ -26,12 +26,7 @@ let channelItems = document.querySelectorAll('.channel-item');
 channelItems.forEach((el, index) => {
     el.addEventListener('click', () => {
         let id = el.getAttribute('data-id');
-        let getChannelPromise = window.api.getChannel(id, searchInput.value, 1, 16);
-
-        getChannelPromise.then((result) => {
-            console.log('Channel clicked:', id, result);
-        });
-
+        window.api.getChannel(id, searchInput.value, 1, 16);
         selectedChannelId = id;
     });
 });
@@ -48,11 +43,7 @@ searchInput.addEventListener('input', (event) => {
         clearTimeout(debounceTimeout);
 
     debounceTimeout = setTimeout(() => {
-        window.api.getChannel(selectedChannelId, keyword, 1, 16)
-            .then(result => {
-                console.log('Search input:', keyword, result);
-            })
-            .catch(err => console.error(err));
+        window.api.getChannel(selectedChannelId, keyword, 1, 16);
     }, 1500);
 });
 
@@ -87,7 +78,7 @@ if (btnAddFavoriteEl !== null && btnAddFavoriteEl !== undefined) {
             alert('Added to favorites');
             btnAddFavoriteEl.innerHTML = '<i class="fa fa-heart"></i>';
         }).catch((err) => {
-            alert('Error adding to favorites: ' + err.message);
+            window.api.showMsgBox('info', 'Error', err.message, ['OK']);
         });
     });
 }
@@ -105,7 +96,7 @@ if (btnRemoveFavoriteEl !== null && btnRemoveFavoriteEl !== undefined) {
             alert('Removed from favorites');
             btnRemoveFavoriteEl.innerHTML = '<i class="far fa-heart"></i>';
         }).catch((err) => {
-            alert('Error removing from favorites: ' + err.message);
+            window.api.showMsgBox('info', 'Error', err.message, ['OK']);
         });
     });
 }

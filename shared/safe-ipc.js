@@ -2,7 +2,9 @@ const { ipcMain } = require("electron");
 const Window = require("../logic/windows");
 
 /**
- * 
+ * A wrapper around ipcMain to handle errors gracefully.
+ * | Một lớp bọc mỏng cho ipcMain để xử lý lỗi một cách trơn tru.
+ * @class SafeIpc
  */
 class SafeIpc {
     /**
@@ -26,7 +28,7 @@ class SafeIpc {
             try {
                 await listener(event, ...args);
             } catch (err) {
-                console.debug(err.message);
+                console.debug(err);
                 await SafeIpc.#window.showMsgBox('info', 'Error', err.message, ['OK'])
             }
         });
@@ -43,8 +45,8 @@ class SafeIpc {
             try {
                 return await listener(event, ...args);
             } catch (err) {
-                console.debug(err.message);
-                await SafeIpc.#window.showMsgBox('info', 'Error', err.message, ['OK'])
+                console.debug(err);
+                throw new Error('Error handling IPC: ' + err.message);
             }
         });
     }

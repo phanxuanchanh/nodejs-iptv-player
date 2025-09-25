@@ -113,7 +113,7 @@ class Service {
      * 
      * @returns {Promise<{categoryName: string}[]>}
      */
-    static async loadCategories() {
+    static async getCategories() {
         const query = 'SELECT DISTINCT "group"  as categoryName FROM all_channels';
         return await SqliteExecution.getMany(query);
     }

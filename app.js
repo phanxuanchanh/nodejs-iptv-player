@@ -1,4 +1,4 @@
-const { app, shell } = require("electron");
+const { app, shell, ipcMain } = require("electron");
 const os = require("os");
 const path = require("path");
 const Window = require('./logic/windows.js');
@@ -129,7 +129,7 @@ SafeIpc.handle('channel.removefavorite', async (event, id) => {
     return await handler.setFavoriteChannel(id, isFavorite = false);
 });
 
-SafeIpc.handle('add.m3u8.link', async (event, name, url) => {
+SafeIpc.on('add.m3u8.link', async (event, name, url) => {
     if (url === null || url === undefined || url === '')
         window.showMsgBox('info', 'Invalid data', 'URL cannot be null, empty, or undefined', ['OK'])
 
@@ -170,7 +170,11 @@ SafeIpc.on('settings.reset', async (event) => {
     store.clear();
     await SqliteExecution.close();
     FileManager.deleteDir(tempPath);
-    
+
     app.relaunch();
     app.exit(0);
+});
+
+ipcMain.on('msgbox.show', async (event, type, title, message, buttons) => {
+    await window.showMsgBox(type, title, message, buttons);
 });

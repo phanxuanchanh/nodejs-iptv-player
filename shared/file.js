@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * 
+ *  * A class to manage file operations
+ * | Một lớp để quản lý các thao tác tệp
+ * @class FileManager
  */
 class FileManager {
     /**

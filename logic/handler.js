@@ -7,7 +7,9 @@ const path = require("path");
 const Consts = require("./../consts.js");
 
 /**
- * 
+ * Handle requests from renderer process
+ * | Xử lý các yêu cầu từ renderer process
+ * @class Handler
  */
 class Handler {
     /**
@@ -49,7 +51,7 @@ class Handler {
      */
     static Init(paths, window, pageRender, fileManager, history) {
         const handler = new Handler(paths, window, pageRender, fileManager, history, []);
-        Promise.all([Service.getPlaylists(), Service.loadCategories()])
+        Promise.all([Service.getPlaylists(), Service.getCategories()])
             .then((res) => {
                 handler.playlists = res[0];
                 handler.categories = res[1];

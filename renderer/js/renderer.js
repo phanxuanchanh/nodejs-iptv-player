@@ -6,24 +6,15 @@ document.querySelectorAll("a").forEach(a => {
 
 const btnFavoriteEl = document.getElementById('btn-favorite');
 
-btnFavoriteEl.addEventListener('click', function (e) {
-    const gotoFavoritesPromise = window.api.loadList(true, null, 1, 24);
-    gotoFavoritesPromise.then().catch();
-});
+btnFavoriteEl.addEventListener('click', function (e) { window.api.loadList(true, null, 1, 24); });
 
 const btnAllChannelsEl = document.getElementById('btn-all-channels');
 
-btnAllChannelsEl.addEventListener('click', function (e) {
-    const gotoAllChannelsPromise = window.api.loadList(false, null, 1, 24);
-    gotoAllChannelsPromise.then().catch();
-});
+btnAllChannelsEl.addEventListener('click', function (e) { window.api.loadList(false, null, 1, 24); });
 
 const aboutEl = document.getElementById('btn-about');
 
-aboutEl.addEventListener('click', function (e) {
-    const gotoAboutPromise = window.api.gotoAbout();
-    gotoAboutPromise.then().catch();
-});
+aboutEl.addEventListener('click', function (e) { window.api.gotoAbout(); });
 
 const btnM3u8Submit = document.getElementById('btnM3u8Submit');
 const m3u8Link = document.getElementById('m3u8link');
@@ -32,19 +23,14 @@ const m3u8Name = document.getElementById('m3u8name');
 btnM3u8Submit.addEventListener('click', function (e) {
     const url = m3u8Link.value;
     const name = m3u8Name.value;
-    const addM3U8Promise = window.api.addM3U8(name, url);
-
-    addM3U8Promise
-        .then(() => { })
-        .catch(() => { })
+    window.api.addM3U8(name, url);
 });
 
 const selectPlaylistEl = document.getElementById('selectPlaylist');
 
 selectPlaylistEl.addEventListener('change', function (e) {
     const seletedPlaylist = this.value;
-    const selectListPromise = window.api.selectList(seletedPlaylist);
-    selectListPromise.then().catch();
+    window.api.selectList(seletedPlaylist);
 });
 
 const mainSearchEl = document.getElementById('mainSearch');
@@ -56,24 +42,16 @@ mainSearchEl.addEventListener('keydown', function (e) {
     const keyword = e.target.value;
     const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
 
-    window.api.loadList(showFavoriteList, keyword, 1, 24)
-        .then(result => {
-            console.log('Search input:', keyword, result);
-        })
-        .catch(err => console.error(err));
+    window.api.loadList(showFavoriteList, keyword, 1, 24);
 });
 
 const btnSettingsSubmitEl = document.getElementById('btnSettingsSubmit');
 
 btnSettingsSubmitEl.addEventListener('click', function (e) {
     const selectedLanguage = document.getElementById('selectLanguage').value;
-    const submitSettingsPromise = window.api.submitSettings(selectedLanguage);
-    submitSettingsPromise.then().catch();
+    window.api.submitSettings(selectedLanguage);
 });
 
 const btnResetEl = document.getElementById('btnReset');
 
-btnResetEl.addEventListener('click', function (e) {
-    const resetSettingsPromise = window.api.resetSettings();
-    resetSettingsPromise.then().catch();
-});
+btnResetEl.addEventListener('click', function (e) { window.api.resetSettings(); });

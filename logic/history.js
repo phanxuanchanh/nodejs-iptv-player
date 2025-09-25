@@ -1,4 +1,9 @@
 
+/**
+ * A class to manage navigation history
+ * | Một lớp để quản lý lịch sử điều hướng
+ * @class History
+ */
 class History {
     /**
      * @type {{page: int, pageSize: int, search: string}[]}

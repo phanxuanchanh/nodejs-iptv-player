@@ -3,7 +3,9 @@ const path = require("path");
 const FileManager = require("../shared/file");
 
 /**
- * 
+ * A class to manage application window
+ * | Một lớp để quản lý cửa sổ ứng dụng
+ * @class Window
  */
 class Window {
     /**

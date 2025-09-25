@@ -3,7 +3,11 @@ const videoJs_JsPath = '<<VIDEOJS-JSPATH>>';
 const videoJsHttpStreaming_JsPath = '<<VIDEOJS-HTTP-STREAMING-JSPATH>>';
 const videoJsqQualitySelect_JsPath = '<<VIDEOJS-QUALITY-SELECTOR-JSPATH>>';
 
-async function addVideoJsCss() {
+/**
+ * 
+ * @returns {Promise<void>}
+ */
+function addVideoJsCss() {
     return new Promise((resolve, reject) => {
         const videoJslink = document.createElement('link');
         videoJslink.rel = 'stylesheet';
@@ -16,7 +20,11 @@ async function addVideoJsCss() {
     });
 }
 
-async function addVideoJsScript() {
+/**
+ * 
+ * @returns {Promise<void>}
+ */
+function addVideoJsScript() {
     return new Promise((resolve, reject) => {
         const videoJsScript = document.createElement('script');
         videoJsScript.src = videoJs_JsPath;
@@ -28,7 +36,11 @@ async function addVideoJsScript() {
     })
 }
 
-async function addVideoJsHttpStreamingScript() {
+/**
+ * 
+ * @returns {Promise<void>}
+ */
+function addVideoJsHttpStreamingScript() {
     return new Promise((resolve, reject) => {
         const videoJsHttpStreamingScript = document.createElement('script');
         videoJsHttpStreamingScript.src = videoJsHttpStreaming_JsPath;
@@ -40,7 +52,11 @@ async function addVideoJsHttpStreamingScript() {
     });
 }
 
-async function addVideoJsQualitySelectorScript() {
+/**
+ * 
+ * @returns {Promise<void>}
+ */
+function addVideoJsQualitySelectorScript() {
     return new Promise((resolve, reject) => {
         const videoJsQualitySelectorScript = document.createElement('script');
         videoJsQualitySelectorScript.src = videoJsqQualitySelect_JsPath;

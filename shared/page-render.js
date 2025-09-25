@@ -4,7 +4,10 @@ const path = require("path");
 const helpers = require('./handlebars-helper.js');
 
 /**
+ * A class to render Handlebars pages
+ * | Một lớp để kết xuất các trang Handlebars
  * 
+ * @class PageRender
  */
 class PageRender {
     /**
