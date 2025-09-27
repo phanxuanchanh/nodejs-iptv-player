@@ -4,23 +4,25 @@ document.querySelectorAll("a").forEach(a => {
     });
 });
 
-const btnFavoriteEl = document.getElementById('btn-favorite');
+const pageParamsString = document.getElementById('page-params').value;
 
-btnFavoriteEl.addEventListener('click', function (e) { 
+const btnBackEl = document.getElementById('btn-back');
+
+if (btnBackEl !== null && btnBackEl !== undefined) {
+    btnBackEl.addEventListener('click', function (e) { window.api.goBack(); });
+}
+
+document.getElementById('btn-favorite').addEventListener('click', function (e) {
     const category = document.getElementById('content').getAttribute('content-by-cat');
-    window.api.loadList(true, category, null, 1, 24); 
+    window.api.loadList(true, category, null, 1, 24);
 });
 
-const btnAllChannelsEl = document.getElementById('btn-all-channels');
-
-btnAllChannelsEl.addEventListener('click', function (e) { 
+document.getElementById('btn-all-channels').addEventListener('click', function (e) {
     const category = document.getElementById('content').getAttribute('content-by-cat');
-    window.api.loadList(false, category, null, 1, 24); 
+    window.api.loadList(false, category, null, 1, 24);
 });
 
-const categoriesDropdownItemEls = document.querySelectorAll('.categories-dropdown-item');
-
-categoriesDropdownItemEls.forEach((el, index) => {
+document.querySelectorAll('.categories-dropdown-item').forEach((el, index) => {
     el.addEventListener('click', function (e) {
         let category = el.innerText;
         const showFavoriteList = document.getElementById('content').getAttribute('favorite-content') === 'true';
@@ -28,30 +30,21 @@ categoriesDropdownItemEls.forEach((el, index) => {
     });
 });
 
-const aboutEl = document.getElementById('btn-about');
+document.getElementById('btn-about').addEventListener('click', function (e) { window.api.gotoAbout(); });
 
-aboutEl.addEventListener('click', function (e) { window.api.gotoAbout(); });
+document.getElementById('btnM3u8Submit').addEventListener('click', function (e) {
+    const url = document.getElementById('m3u8link').value;
+    const name = document.getElementById('m3u8name').value;
 
-const btnM3u8Submit = document.getElementById('btnM3u8Submit');
-const m3u8Link = document.getElementById('m3u8link');
-const m3u8Name = document.getElementById('m3u8name');
-
-btnM3u8Submit.addEventListener('click', function (e) {
-    const url = m3u8Link.value;
-    const name = m3u8Name.value;
     window.api.addM3U8(name, url);
 });
 
-const selectPlaylistEl = document.getElementById('selectPlaylist');
-
-selectPlaylistEl.addEventListener('change', function (e) {
+document.getElementById('selectPlaylist').addEventListener('change', function (e) {
     const seletedPlaylist = this.value;
     window.api.selectList(seletedPlaylist);
 });
 
-const mainSearchEl = document.getElementById('mainSearch');
-
-mainSearchEl.addEventListener('keydown', function (e) {
+document.getElementById('mainSearch').addEventListener('keydown', function (e) {
     if (e.key !== 'Enter')
         return;
 
@@ -62,13 +55,9 @@ mainSearchEl.addEventListener('keydown', function (e) {
     window.api.loadList(showFavoriteList, category, keyword, 1, 24);
 });
 
-const btnSettingsSubmitEl = document.getElementById('btnSettingsSubmit');
-
-btnSettingsSubmitEl.addEventListener('click', function (e) {
+document.getElementById('btnSettingsSubmit').addEventListener('click', function (e) {
     const selectedLanguage = document.getElementById('selectLanguage').value;
     window.api.submitSettings(selectedLanguage);
 });
 
-const btnResetEl = document.getElementById('btnReset');
-
-btnResetEl.addEventListener('click', function (e) { window.api.resetSettings(); });
+document.getElementById('btnReset').addEventListener('click', function (e) { window.api.resetSettings(); });

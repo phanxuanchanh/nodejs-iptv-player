@@ -9,6 +9,7 @@ const Service = require("./logic/serivce.js");
 const History = require('./logic/history.js');
 const Store = require('electron-store').default;
 const Handler = require('./logic/handler.js');
+const PageParams = require('./logic/page-params.js');
 const SafeIpc = require('./shared/safe-ipc.js');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
@@ -87,7 +88,7 @@ let handler = null;
 const interval1 = setInterval(async () => {
     if (setupDbComplete && setupAssetsComplete) {
         clearInterval(interval1);
-        handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager, history);
+        handler = Handler.Init({ appPath: appPath, tempPath: tempPath }, window, pageRender, fileManager);
     }
 }, 200);
 
@@ -151,6 +152,30 @@ SafeIpc.on('list.select', async (event, id) => {
 
 SafeIpc.on('goto.about', async (event) => {
     await handler.loadAbout();
+});
+
+SafeIpc.on('history.add', async (event, pageParamsString) => {
+    const pageParamsObject = PageParams.decodeAndGet(pageParamsString);
+    
+    if(pageParamsObject.listPage !== null)
+        history.push(pageParamsObject.selectedPlaylistId, pageParamsObject.listPage, true);
+    else if(pageParamsObject.playPage !== null)
+        history.push(pageParamsObject.selectedPlaylistId, pageParamsObject.playPage, false);
+    else
+        await await window.showMsgBox('info', 'Error', 'Page params invalid', ['OK']);
+});
+
+SafeIpc.on('go.back', async (event) => {
+    const pageParams = history.pop();
+
+    if(pageParams === null || pageParams === undefined)
+        await window.showMsgBox('info', 'Info', 'No more history to go back.', ['OK']);
+    else if (pageParams.playPage !== null && pageParams.playPage !== undefined)
+        await handler.loadChannel(pageParams.playPage.channelId, pageParams.playPage.search, pageParams.playPage.page, pageParams.playPage.pageSize);
+    else if (pageParams.listPage !== null && pageParams.listPage !== undefined)
+        await handler.loadChannels(pageParams.listPage.showFavoriteList, pageParams.listPage.categoryName, pageParams.listPage.search, pageParams.listPage.page, pageParams.listPage.pageSize);
+    else
+        await window.showMsgBox('info', 'Info', 'No more history to go back.', ['OK']);
 });
 
 SafeIpc.on('link.open', async (event, url) => {

@@ -6,30 +6,90 @@
  */
 class History {
     /**
-     * @type {{page: int, pageSize: int, search: string}[]}
+     * @type {{
+     * selectedListId: int,
+     * listPage: { showFavoriteList: boolean, categoryName: string, search: string, page: int, pageSize: int },
+     * playPage: { channelId: int, search: string, page: int, pageSize: int }
+     * }[]}
      */
-    #listPages;
+    #items = [];
 
-    constructor(){ 
-        this.#listPages = [];
+    constructor() {
+        this.#items = [];
     }
 
     /**
      * 
-     * @param {int} selectedListId
-     * @param {string} search
-     * @param {int} page
-     * @param {int} pageSize
+     * @param {{showFavoriteList: boolean, categoryName: string, search: string, page: int, pageSize: int}} pageParams 
+     * @returns {boolean}
      */
-    pushListPage(selectedListId, search, page, pageSize){
-        this.#listPages.push({ selectedListId, search, page, pageSize })
+    #checkListPageExist(pageParams) {
+        return this.#items.some(
+            p => p.selectedListId === pageParams.selectedListId
+                && p.listPage.showFavoriteList === pageParams.showFavoriteList
+                && p.listPage.categoryName === pageParams.categoryName
+                && p.listPage.search === pageParams.search
+                && p.listPage.page === pageParams.page
+                && p.listPage.pageSize === pageParams.pageSize
+        );
     }
 
     /**
-     * @returns {{page: int, pageSize: int, search: string}}
+     * 
+     * @param {{channelId: int, search: string, page: int, pageSize: int}} pageParams 
+     * @returns {boolean}
      */
-    popListPage(){
-        return this.#listPages.pop();
+    #checkPlayPageExist(pageParams) {
+        return this.#items.some(
+            p => p.selectedListId === pageParams.selectedListId
+                && p.playPage.channelId === pageParams.channelId
+                && p.playPage.search === pageParams.search
+                && p.playPage.page === pageParams.page
+                && p.playPage.pageSize === pageParams.pageSize
+        );
+    }
+
+    /**
+     * 
+     * @param {{showFavoriteList: boolean, categoryName: string, search: string, page: int, pageSize: int} 
+     * | {channelId: int, search: string, page: int, pageSize: int}} pageParams 
+     */
+    push(selectedListId, pageParams, isListPage = true) {
+        let item = {
+            selectedListId,
+            listPage: null,
+            playPage: null
+        };
+
+        if (isListPage)
+            item.listPage = pageParams;
+        else
+            item.playPage = pageParams;
+
+        if (isListPage) {
+            if (this.#checkListPageExist(pageParams))
+                return;
+
+            this.#items.push(item);
+            return;
+        }
+
+        if(this.#checkPlayPageExist(pageParams))
+            return;
+
+        this.#items.push(item);
+    }
+
+    /**
+     * 
+     * @returns {{
+     * selectedListId: int,
+     * listPage: { showFavoriteList: boolean, categoryName: string, search: string, page: int, pageSize: int },
+     * playPage: { channelId: int, search: string, page: int, pageSize: int }
+     * }[]}
+     */
+    pop(){
+        return this.#items.pop();
     }
 }
 

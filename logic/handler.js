@@ -1,10 +1,10 @@
 const Service = require("./serivce.js");
 const PageRender = require("../shared/page-render.js");
 const FileManager = require("../shared/file.js");
-const History = require('./history.js');
 const Window = require('./windows.js');
 const path = require("path");
 const Consts = require("./../consts.js");
+const PageParams = require("./page-params.js");
 
 /**
  * Handle requests from renderer process
@@ -23,16 +23,14 @@ class Handler {
      * @param {Window} window 
      * @param {PageRender} pageRender
      * @param {FileManager} fileManager
-     * @param {History} history
      * @param {{id: int, name: string, urlOrFileName: string, createdAt: Date}[]} playlists
      * @param {{ categoryName: string}[]} categories
      */
-    constructor(paths, window, pageRender, fileManager, history, playlists, categories) {
+    constructor(paths, window, pageRender, fileManager, playlists, categories) {
         this.paths = paths;
         this.window = window;
         this.pageRender = pageRender;
         this.fileManager = fileManager;
-        this.history = history;
         this.playlists = playlists;
         this.categories = categories;
 
@@ -45,12 +43,11 @@ class Handler {
      * @param {{appPath: string, tempPath: string}} paths
      * @param {Window} window 
      * @param {PageRender} pageRender 
-     * @param {FileManager} fileManager 
-     * @param {History} history
+     * @param {FileManager} fileManager
      * @returns {Handler}
      */
-    static Init(paths, window, pageRender, fileManager, history) {
-        const handler = new Handler(paths, window, pageRender, fileManager, history, []);
+    static Init(paths, window, pageRender, fileManager) {
+        const handler = new Handler(paths, window, pageRender, fileManager, []);
         Promise.all([Service.getPlaylists(), Service.getCategories()])
             .then((res) => {
                 handler.playlists = res[0];
@@ -83,6 +80,19 @@ class Handler {
             throw new Error('Config not set');
 
         const paged = await Service.getChannels(this.#config.selectedPlaylistId, showFavoriteList, categoryName, search, page, pageSize);
+        const pageParamsObject = {
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            listPage: {
+                showFavoriteList,
+                categoryName,
+                search,
+                page,
+                pageSize,
+            },
+            playPage: null
+        };
+        const pageParamsString = PageParams.buildAndEncode(pageParamsObject);
+
         const html = this.pageRender.renderPage('home', {
             layout: 'layout',
             paginatedData: paged,
@@ -91,12 +101,12 @@ class Handler {
             selectedPlaylistId: this.#config.selectedPlaylistId,
             selectedLanguage: this.#config.selectedLanguage,
             enableBackBtn: false,
+            pageParamsString,
             consts: Consts,
         });
         const homeJs = this.fileManager.getFileContent('/renderer/js/', 'home.js')
 
         await this.window.load(html, true, { type: 'js', data: homeJs });
-        this.history.pushListPage(this.#config.selectedPlaylistId, search, page, pageSize);
     }
 
     /**
@@ -109,6 +119,18 @@ class Handler {
     async loadChannel(id, search = null, page = 1, pageSize = 24) {
         const channel = await Service.getChannel(id);
         const paged = await Service.getChannels(this.#config.selectedPlaylistId, false, 'all', search, page, pageSize);
+        const pageParamsObject = {
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            listPage: null,
+            playPage: {
+                channelId: id,
+                search,
+                page,
+                pageSize
+            }
+        };
+        const pageParamsString = PageParams.buildAndEncode(pageParamsObject);
+
         const html = this.pageRender.renderPage('play', {
             layout: 'layout',
             paginatedData: paged,
@@ -119,6 +141,7 @@ class Handler {
             selectedPlaylistId: this.#config.selectedPlaylistId,
             selectedLanguage: this.#config.selectedLanguage,
             enableBackBtn: true,
+            pageParamsString,
             consts: Consts,
         });
 
@@ -159,6 +182,14 @@ class Handler {
      * @returns {Promise<void>}
      */
     async loadAbout() {
+        const pageParamsObject = {
+            selectedPlaylistId: this.#config.selectedPlaylistId,
+            listPage: null,
+            playPage: null
+        };
+
+        const pageParamsString = PageParams.buildAndEncode(pageParamsObject);
+
         const html = this.pageRender.renderPage('about', {
             layout: 'layout',
             playlists: this.playlists,
@@ -166,6 +197,7 @@ class Handler {
             selectedPlaylistId: this.#config.selectedPlaylistId,
             selectedLanguage: this.#config.selectedLanguage,
             enableBackBtn: false,
+            pageParamsString,
             consts: Consts,
         });
         const aboutJs = this.fileManager.getFileContent('/renderer/js/', 'about.js');

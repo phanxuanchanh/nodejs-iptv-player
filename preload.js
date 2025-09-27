@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld("api", {
   removeFavorite: (id) => ipcRenderer.invoke('channel.removefavorite', id),
   addM3U8: (name, url) => ipcRenderer.send('add.m3u8.link', name, url),
   gotoAbout: () => ipcRenderer.send('goto.about'),
+  goBack: () => ipcRenderer.send('go.back'),
+  addToHistory: (pageParamsString) => ipcRenderer.send('history.add', pageParamsString),
   openLink: (url) => ipcRenderer.send('link.open', url),
   resetSettings: () => ipcRenderer.send('settings.reset'),
   submitSettings: (lang) => ipcRenderer.send('settings.submit', lang),
