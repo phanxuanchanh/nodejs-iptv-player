@@ -28,5 +28,7 @@
     "about-title": "About This App",
     "about-description": "An IPTV player for Windows that streams live TV channels from M3U playlists.",
     "play-channel-list": "Channel List",
-    "play-search-input-placeholder": "Search channels"
+    "play-search-input-placeholder": "Search channels",
+    "msg-box-error-title": "Error",
+    "first-run-message": "The application is being launched for the first time. The data preparation process is in progress, so please be patient!"
 }

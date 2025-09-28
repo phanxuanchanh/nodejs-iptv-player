@@ -55,11 +55,7 @@ class History {
      * | {channelId: int, search: string, page: int, pageSize: int}} pageParams 
      */
     push(selectedListId, pageParams, isListPage = true) {
-        let item = {
-            selectedListId,
-            listPage: null,
-            playPage: null
-        };
+        let item = { selectedListId, listPage: null, playPage: null };
 
         if (isListPage)
             item.listPage = pageParams;

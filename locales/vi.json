@@ -28,5 +28,7 @@
     "about-title": "Về ứng dụng này",
     "about-description": "Trình phát IPTV cho Windows phát trực tiếp các kênh TV từ danh sách phát M3U.",
     "play-channel-list": "Danh sách kênh",
-    "play-search-input-placeholder": "Tìm kiếm kênh"
+    "play-search-input-placeholder": "Tìm kiếm kênh",
+    "msg-box-error-title": "Lỗi",
+    "first-run-message": "Ứng dụng đang được khởi chạy lần đầu. Quá trình chuẩn bị dữ liệu đang diễn ra, do vậy hãy kiên nhẫn chờ nhé!"
 }
