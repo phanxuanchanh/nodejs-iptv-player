@@ -13,6 +13,7 @@ const PageParams = require('./logic/page-params.js');
 const SafeIpc = require('./shared/safe-ipc.js');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
+const { autoUpdater } = require('electron-updater');
 
 const appPath = app.getAppPath();
 const tempPath = path.join(os.tmpdir(), app.getName());
@@ -52,9 +53,10 @@ const interval1 = setInterval(() => {
     clearInterval(interval1);
     app.whenReady().then(() => {
         window.init();
+        autoUpdater.checkForUpdatesAndNotify();
 
         if (firstRun === 'yes') {
-            new Notification({ title: 'NodeJS-IPTV', body: i18next.t('first-run-message')}).show();
+            new Notification({ title: 'NodeJS-IPTV', body: i18next.t('first-run-message') }).show();
             firstRun = 'no';
             store.set('app.firstRun', firstRun);
         }
@@ -140,6 +142,14 @@ const interval4 = setInterval(async () => {
         await window.showMsgBox('info', i18next.t('msg-box-error-title'), err.message, ['OK']);
         app.exit(1);
     }
+
+    autoUpdater.on('update-available', () => {
+        mainWindow.webContents.send('update_available');
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        mainWindow.webContents.send('update_downloaded');
+    });
 
     SafeIpc.setWindow(window);
 
@@ -231,5 +241,9 @@ const interval4 = setInterval(async () => {
 
     ipcMain.on('msgbox.show', async (event, type, title, message, buttons) => {
         await window.showMsgBox(type, title, message, buttons);
+    });
+
+    ipcMain.on('quit.install', async(event) => {
+        autoUpdater.quitAndInstall();
     });
 }, 200);

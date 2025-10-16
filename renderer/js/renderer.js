@@ -1,3 +1,13 @@
+window.api.onUpdateAvailable(() => {
+  alert('🔔 Có bản cập nhật mới! Đang tải về...');
+});
+
+window.api.onUpdateDownloaded(() => {
+  if (confirm('✅ Bản cập nhật đã sẵn sàng. Khởi động lại để cài đặt?')) {
+    window.api.quitAndInstall();
+  }
+});
+
 document.querySelectorAll("a").forEach(a => {
     a.addEventListener("click", e => {
         e.preventDefault();

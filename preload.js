@@ -13,5 +13,8 @@ contextBridge.exposeInMainWorld("api", {
   openLink: (url) => ipcRenderer.send('link.open', url),
   resetSettings: () => ipcRenderer.send('settings.reset'),
   submitSettings: (lang) => ipcRenderer.send('settings.submit', lang),
-  showMsgBox: (type, title, message, buttons) => ipcRenderer.send('msgbox.show', type, title, message, buttons)
+  showMsgBox: (type, title, message, buttons) => ipcRenderer.send('msgbox.show', type, title, message, buttons),
+  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', callback),
+  onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', callback),
+  quitAndInstall: () => ipcRenderer.send('quit.install')
 });

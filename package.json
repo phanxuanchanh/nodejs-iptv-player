@@ -6,13 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electronmon .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:win": "electron-builder --win --x64",
+    "build:publish": "electron-builder --win --publish always"
   },
   "build": {
     "appId": "com.phanxuanchanh.iptvplayer",
     "win": {
       "target": "nsis"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "phanxuanchanh",
+        "repo": "nodejs-iptv-player"
+      }
+    ]
   },
   "author": "phanxuanchanh.com",
   "license": "MIT",
