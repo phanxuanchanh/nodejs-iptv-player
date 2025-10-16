@@ -13,7 +13,7 @@
   "build": {
     "appId": "com.phanxuanchanh.iptvplayer",
     "win": {
-      "target": "nsis"
+      "target": [ "nsis", "appx" ]   
     },
     "publish": [
       {

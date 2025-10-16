@@ -53,7 +53,6 @@ const interval1 = setInterval(() => {
     clearInterval(interval1);
     app.whenReady().then(() => {
         window.init();
-        autoUpdater.checkForUpdatesAndNotify();
 
         if (firstRun === 'yes') {
             new Notification({ title: 'NodeJS-IPTV', body: i18next.t('first-run-message') }).show();
@@ -131,6 +130,9 @@ const interval4 = setInterval(async () => {
 
     clearInterval(interval4);
     try {
+        if(!process.windowsStore)
+            await autoUpdater.checkForUpdatesAndNotify();
+
         handler.setConfig({ selectedPlaylistId: selectedListId, selectedLanguage: selectedLanguage });
 
         if (selectedListId !== 0)
