@@ -20,8 +20,14 @@ npm install
 npm start
 ```
 
-## 3. Build ra phiên bản Production
+## 3. Đóng gói và phát hành ứng dụng
 
+Build là tập tin cài đặt:
 ```
 npm run build
+```
+
+Build ra tập tin cài đặt và đẩy lên GitHub Release:
+```
+set GH_TOKEN=your_token && npm run build:publish
 ```
