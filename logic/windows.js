@@ -20,6 +20,10 @@ class Window {
         this.fileManager = new FileManager(appPath);
     }
 
+    /**
+     * 
+     * @returns {BrowserWindow}
+     */
     init() {
         this.win = new BrowserWindow({
             width: 900,
@@ -30,8 +34,12 @@ class Window {
                 nodeIntegration: false,
                 contextIsolation: true,
                 webSecurity: false
-            }
+            },
+            // Image by <a href="https://pixabay.com/users/benkirb-8692052/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=9308136">Benjamin Adams</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=9308136">Pixabay</a>
+            icon: path.join(this.appPath, "renderer", "icons", "tv-9308136_640.png")
         });
+
+        return this.win;
     }
 
     async #loadDefaultAssets() {

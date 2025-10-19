@@ -1,7 +1,7 @@
 {
   "name": "nodejs-iptv",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "An IPTV player for Windows that streams live TV channels from M3U playlists.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,10 @@
   "build": {
     "appId": "com.phanxuanchanh.iptvplayer",
     "win": {
-      "target": [ "nsis", "appx" ]   
+      "target": [ "nsis" ]   
+    },
+    "linux": {
+      "target": [ "AppImage", "deb" ]
     },
     "publish": [
       {

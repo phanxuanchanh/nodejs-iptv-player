@@ -30,5 +30,6 @@
     "play-channel-list": "チャンネルリスト",
     "play-search-input-placeholder": "チャンネルを検索",
     "msg-box-error-title": "エラー",
-    "first-run-message": "アプリケーションを初めて起動しています。データの準備処理を実行中ですので、しばらくお待ちください！"
+    "first-run-message": "アプリケーションを初めて起動しています。データの準備処理を実行中ですので、しばらくお待ちください！",
+    "app-version": "アプリバージョン"
 }

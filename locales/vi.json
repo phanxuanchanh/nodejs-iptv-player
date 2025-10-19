@@ -30,5 +30,6 @@
     "play-channel-list": "Danh sách kênh",
     "play-search-input-placeholder": "Tìm kiếm kênh",
     "msg-box-error-title": "Lỗi",
-    "first-run-message": "Ứng dụng đang được khởi chạy lần đầu. Quá trình chuẩn bị dữ liệu đang diễn ra, do vậy hãy kiên nhẫn chờ nhé!"
+    "first-run-message": "Ứng dụng đang được khởi chạy lần đầu. Quá trình chuẩn bị dữ liệu đang diễn ra, do vậy hãy kiên nhẫn chờ nhé!",
+    "app-version": "Phiên bản ứng dụng"
 }

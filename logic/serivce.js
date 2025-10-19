@@ -6,7 +6,8 @@ const SqliteExecution = require('../shared/sqlite.js');
  */
 class Service {
     /**
-     * 
+     * Get list of playlists
+     * Lấy danh sách phát
      * @returns {Promise<{id: int, name: string, urlOrFileName: string, createdAt: Date}[]>}
      */
     static async getPlaylists() {
@@ -15,7 +16,8 @@ class Service {
     }
 
     /**
-     * 
+     * Get list of channels
+     * Lấy danh sách kênh
      * @param {int} listId 
      * @param {boolean} favorited
      * @param {string} search 
@@ -62,7 +64,8 @@ class Service {
     }
 
     /**
-     * 
+     * Get channel by ID
+     * Lấy kênh theo ID
      * @param {int} id 
      * @returns {{id: int, name: string, logo: string, group: string, url: string, list_id: int, favorited: 0|1}}
      */
@@ -77,7 +80,8 @@ class Service {
     }
 
     /**
-     * 
+     * Set favorite status for a channel
+     * Đặt trạng thái yêu thích cho một kênh
      * @param {int} id 
      * @param {boolean} isFavorite 
      */
@@ -87,7 +91,8 @@ class Service {
     }
 
     /**
-     * 
+     * Add new playlist
+     * Thêm danh sách phát mới
      * @param {string} name 
      * @param {string} url 
      */
@@ -116,7 +121,8 @@ class Service {
     }
 
     /**
-     * 
+     * Get list of channel categories
+     * Lấy danh sách thể loại kênh
      * @returns {Promise<{categoryName: string}[]>}
      */
     static async getCategories() {

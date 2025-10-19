@@ -46,13 +46,15 @@ if (firstRun === undefined || firstRun === null) {
     store.set('app.firstRun', firstRun);
 }
 
+let browserWindow = null;
+
 const interval1 = setInterval(() => {
     if (!setupI18nextComplete)
         return;
 
     clearInterval(interval1);
     app.whenReady().then(() => {
-        window.init();
+        browserWindow = window.init();
 
         if (firstRun === 'yes') {
             new Notification({ title: 'NodeJS-IPTV', body: i18next.t('first-run-message') }).show();
@@ -146,11 +148,11 @@ const interval4 = setInterval(async () => {
     }
 
     autoUpdater.on('update-available', () => {
-        mainWindow.webContents.send('update_available');
+        browserWindow.webContents.send('update_available');
     });
 
     autoUpdater.on('update-downloaded', () => {
-        mainWindow.webContents.send('update_downloaded');
+        browserWindow.webContents.send('update_downloaded');
     });
 
     SafeIpc.setWindow(window);

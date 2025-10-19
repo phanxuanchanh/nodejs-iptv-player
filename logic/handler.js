@@ -188,7 +188,7 @@ class Handler {
             playPage: null
         };
 
-        const pageParamsString = PageParams.buildAndEncode(pageParamsObject);
+        const pageParamsString = PageParams.buildAndEncode(pageParamsObject);  
 
         const html = this.pageRender.renderPage('about', {
             layout: 'layout',
